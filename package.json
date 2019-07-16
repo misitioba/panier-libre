@@ -1,0 +1,9 @@
+{
+  "name": "basket-hot",
+  "version": "1.0.0",
+  "description": "Basket hot allow local entrepreneurs to manage baskets online",
+  "main": "index.js",
+  "repository": "git@gitlab.com:misitioba/basket-hot.git",
+  "author": "Javi <arancibiajav@gmail.com>",
+  "license": "MIT"
+}
