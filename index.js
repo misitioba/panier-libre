@@ -12,7 +12,8 @@ module.exports = async(app, config) => {
     });
 
     const express = require('express')
-    app.use('/basket-hot/static', express.static(`${config.path}/static`))
+
+    app.use('/basket-hot/static', express.static(config.getPath('static')))
 
     await app.builder.transformFile({
         target: '/index.html',
