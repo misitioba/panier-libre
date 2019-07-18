@@ -2,9 +2,24 @@ extends layout.pug
 block content
     router-view
 block scripts
-    script(src="/basket-hot/static/backComponent.js")
-    script(src="/basket-hot/static/configComponent.js")
-    script(src="/basket-hot/static/viewerComponent.js")
-    script(src="/basket-hot/static/navComponent.js")
-    script(src="/basket-hot/static/homeComponent.js")
+    
+    script(src="/basket-hot/static/js/containers/configComponent.js")
+    script(src="/basket-hot/static/js/containers/viewerComponent.js")
+    script(src="/basket-hot/static/js/containers/homeComponent.js")
+
+    script(src="/basket-hot/static/js/components/navComponent.js")
+    script(src="/basket-hot/static/js/components/backComponent.js")
+    script(src="/basket-hot/static/js/components/basketListComponent.js")
+    script(src="/basket-hot/static/js/components/addBasket.js")
+    script(src="/basket-hot/static/js/components/modalWindow.js")
+    script(src="/basket-hot/static/js/components/tableComponent.js")
+
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/fr.js")
+    script(src="/static/js/moment.js")
+
+    script(src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js")
+    
     script(src="/basket-hot/static/app.js")
+    
+    
