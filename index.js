@@ -15,6 +15,13 @@ module.exports = async(app, config) => {
 
     app.use('/basket-hot/static', express.static(config.getPath('static')))
 
+    app.loadApiFunctions({
+        path: config.getPath('api'),
+        scope: {
+            dbName: config.db_name
+        }
+    })
+
     await app.builder.transformFile({
         target: '/index.html',
         source: 'app.pug',
