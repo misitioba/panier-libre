@@ -1,3 +1,43 @@
 .app_content {
     max-width: initial;
 }
+
+.archived_row {
+    background-color: #ddcde7;
+}
+
+select {
+    font-size: 14px;
+    border: 0px;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn_group {
+    margin-bottom: 30px;
+}
+
+.form_bottom_btn_group {
+    margin-top: 30px;
+}
+
+.form_group {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    grid-template-areas: '1 2';
+}
+
+.form_group label {
+    margin: 10px 10px 10px 0px;
+    padding: 5px 0px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.form_group input {
+    margin: 10px 0px;
+    padding: 5px 20px;
+}

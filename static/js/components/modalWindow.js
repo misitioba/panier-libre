@@ -1,14 +1,17 @@
 Vue.component('modal-window', {
     props: ['value', 'params'],
     template: `
-        <div class="modal_window" ref="root" @click="close">
+        <div class="modal_window" ref="root" @click="close" @keyup.enter="submit" @keyup.esc="close" tabindex="0">
+            
             <div class="modal_body" @click="stopPropagation">
-            <component v-bind:is="value" @close="close" :params="params"></component>
+            <i class="fas fa-times modal_window__close" @click="close"></i>
+            <component ref="cmp" @onDirty="v=>isDirty=v" v-bind:is="value" @close="close" :params="params"></component>
             </div>
         </div>
     `,
     data() {
         return {
+            isDirty: false,
             styles: `
             .modal_window{
                 position:fixed;
@@ -17,6 +20,12 @@ Vue.component('modal-window', {
                 width: calc(100vw);
                 height: calc(100vh);
                 background-color:rgba(0,0,0,.8);
+                overflow-y: auto;
+            }
+            .modal_window .modal_window__close{
+                float: right;
+font-size: 30px;
+cursor:pointer;
             }
             .modal_body{
                 background-color: white;
@@ -27,19 +36,22 @@ padding: 15px;
             @media only screen and (max-width: 639px) {
                 
             }
-        `,
-
+        `
         }
     },
-    computed: {
-
-    },
+    computed: {},
     methods: {
+        submit() {
+            this.$refs.cmp.$emit('submit')
+        },
         stopPropagation(e) {
-            e.stopPropagation();
+            e.stopPropagation()
         },
         close() {
-            if (window.confirm('Close? Will lose any unsaved modification')) {
+            let needsConfirmation = this.isDirty
+            if (!needsConfirmation ||
+                window.confirm('Fermer? Vous risquez de perdre des modifications')
+            ) {
                 this.$emit('close')
             }
         }
@@ -49,6 +61,5 @@ padding: 15px;
         styles.setAttribute('scoped', '')
         styles.innerHTML = this.styles
         this.$refs.root.appendChild(styles)
-
     }
 })

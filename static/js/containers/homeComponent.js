@@ -5,9 +5,9 @@ const HomeComponent = {
     <!--
         <nav-component :enabled="isNavEnabled"></nav-component>
         -->
-        <basket-list v-show="isNavEnabled" @addBasket="addBasket" @editBasket="editBasket"></basket-list>
-        <modal-window ref="modal" v-show="!!modalCmp" v-model="modalCmp" :params="modalCmpParams" @close="closeModal"></modal-window>
+        <basket-list v-show="isNavEnabled" @addBasket="addBasket" @editBasket="editBasket" ref="basketList"></basket-list>
         
+        <modal-window ref="modal" v-show="!!modalCmp" v-model="modalCmp" :params="modalCmpParams" @close="closeModal"></modal-window>
     </div>
     `,
     data() {
@@ -24,6 +24,7 @@ const HomeComponent = {
     methods: {
         closeModal() {
             this.modalCmp = ''
+            this.$refs.basketList.$emit('refresh')
         },
         addBasket() {
             this.modalCmpParams = {
@@ -53,9 +54,9 @@ const HomeComponent = {
             if (window.user && window.user.id != this.user.id) {
                 this.user.id = window.user.id
             }
-        }, 500);
+        }, 500)
     },
     destroyed() {
-        clearInterval(this.interval);
+        clearInterval(this.interval)
     }
 }

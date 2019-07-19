@@ -1,36 +1,43 @@
 html
-    head
-        //include ../partials/head.pug
-        block head
-        meta(name='viewport', content='width=device-width, initial-scale=1')
-        link(rel="stylesheet", href="/styles/main.css", attr)
-        link(rel="stylesheet", href="/static/css/all.min.css", attr)
-        link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css")
-        link(rel="stylesheet", href="/static/css/fonts.css", attr)
-        link(rel="stylesheet", href="/basket-hot/static/app.css", attr)
-    body
-        block beforeApp
-        .appTop()
-            panel(@on_login="login" ref="header" @logout="onLogout" @user="onUser")
-            login-form(v-show="showLogin" @close="closeModal" @logged="onLoginSuccess")
-        .app
-            block beforeHeader
-            //include ../partials/header.pug
-            block afterHeader
-            .app_content
-                block content
-            block beforeFooter
-            //include ../partials/footer.pug
-            block afterFooter
-        block afterApp
-        
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-        script(src="https://unpkg.com/vue@2.6.10/dist/vue.js")
-        script(src="https://unpkg.com/vue-router/dist/vue-router.js")
-        script(src="https://cdn.jsdelivr.net/npm/vue-tables-2@1.4.70/dist/vue-tables-2.min.js" cache="0")
-        script(src="https://unpkg.com/axios@0.2.1/dist/axios.min.js")
-        script(src="/api.js")
-        script(src="/static/js/loginComponent.js")
-        script(src="/static/js/backoffice.js")
+  head
+    //include ../partials/head.pug
+    block head
+    meta(name='viewport', content='width=device-width, initial-scale=1')
 
-        block scripts
+    title!=head.title
+
+    link(rel="stylesheet", href="/styles/main.css", attr)
+    link(rel="stylesheet", href="/static/css/all.min.css", attr)
+    link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css")
+    link(rel="stylesheet", href="/static/css/fonts.css", attr)
+
+    link(rel="stylesheet", href="/basket-hot/static/app.css", attr)
+  body
+    block beforeApp
+    .appTop()
+      shared-header(@on_login="login" ref="header" @logout="onLogout" @user="onUser")
+      shared-login(v-show="showLogin" @close="closeModal" @logged="onLoginSuccess" logo="/basket-hot/static/logo.svg")
+    .app
+      block beforeHeader
+      //include ../partials/header.pug
+      block afterHeader
+      .app_content
+        block content
+      block beforeFooter
+      //include ../partials/footer.pug
+      block afterFooter
+    block afterApp
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    script(src="https://unpkg.com/vue@2.6.10/dist/vue.js")
+    script(src="https://unpkg.com/vue-router/dist/vue-router.js")
+    script(src="https://cdn.jsdelivr.net/npm/vue-tables-2@1.4.70/dist/vue-tables-2.min.js" cache="0")
+    script(src="https://unpkg.com/axios@0.2.1/dist/axios.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js")
+
+    script(src="/api.js")
+    script(src="/static/js/components/sharedLogin.js")
+    script(src="/static/js/components/sharedHeader.js")
+    script(src="/static/js/apps/sharedHeaderApp.js")
+
+    block scripts

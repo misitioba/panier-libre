@@ -29,7 +29,7 @@ module.exports = async(app, config) => {
         transform: [app.cacheCDNScripts],
         context: {
             head: {
-                title: 'Home'
+                title: config.title
             }
         }
     })
