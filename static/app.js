@@ -4,7 +4,8 @@ const ERROR = {
 const routes = [
     { path: '/', component: HomeComponent },
     { path: '/book-basket', component: BookBasketComponent },
-    { path: '/clients-list', component: ClientsListComponent }
+    { path: '/clients-list', component: ClientsListComponent },
+    { path: '/form-integration', component: IntegrationPage }
 ]
 const router = new VueRouter({
     routes

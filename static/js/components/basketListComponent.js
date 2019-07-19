@@ -6,6 +6,8 @@ Vue.component('basket-list', {
                 <button class="btn" @click="addBasket">Ajouter panier</button>
                 <button class="btn" @click="$router.push('book-basket')">Réservation manuelle</button>
                 <button class="btn" @click="$router.push('clients-list')">Nos clients</button>
+                <button class="btn" @click="$router.push('form-integration')">Côté client</button>
+                
             </div>
             <div class="filters">
             <div class="">

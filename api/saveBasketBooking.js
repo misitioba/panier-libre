@@ -1,5 +1,35 @@
 module.exports = app => {
         return async function saveBasketBooking(form) {
+            if (!form.date) {
+                return {
+                    err: 'DATE_REQUIRED'
+                }
+            }
+
+            if (!form.basket_id) {
+                return {
+                    err: 'BASKET_ID_REQUIRED'
+                }
+            }
+
+            if (!form.email) {
+                return {
+                    err: 'EMAIL_REQUIRED'
+                }
+            }
+
+            if (form.isCustomer) {
+                let isBasketAvailable = await isBasketAvailableForBooking(
+                    form.basket_id,
+                    this
+                )
+                if (!isBasketAvailable) {
+                    return {
+                        err: 'NOT_AVAILABLE'
+                    }
+                }
+            }
+
             if (form.bulkSubscribers) {
                 return await addSubscribersBulk(form, this)
             }
@@ -35,15 +65,15 @@ module.exports = app => {
             return await app.dbExecute(
                     `
             INSERT INTO 
-                basket_bookings(client_id,basket_id,date)
+                basket_bookings(client_id,basket_id,is_canceled,date)
                 VALUES
             ${clients.map(c => {
-    return `(${c.id},${form.basket_id},${form.date})`
+    return `(${c.id},${form.basket_id},${0},${form.date})`
   }).join(`,
             `)}
             ON DUPLICATE KEY UPDATE
-            client_id = client_id, 
-            basket_id = basket_id,
+            client_id = VALUES(client_id), 
+            basket_id = VALUES(basket_id),
             is_canceled = 0
             `,
       [],
@@ -81,6 +111,34 @@ module.exports = app => {
       {
         dbName: options.dbName,
         single: true
+      }
+    )
+  }
+
+  async function isBasketAvailableForBooking (basket_id, options) {
+    return await app.dbExecute(
+      `
+    SELECT
+      b.id,
+      b.quantity,
+      sub.booked
+    FROM baskets as b
+      LEFT JOIN basket_bookings as bb on bb.basket_id = b.id
+    
+      LEFT JOIN  
+        (SELECT sb.id, count(sbb.id) as booked from baskets as sb
+        LEFT JOIN  basket_bookings as sbb on sbb.basket_id = sb.id and sbb.is_canceled = 0
+        group by sb.id
+        ) as sub on sub.id = b.id
+    
+    WHERE
+    (b.quantity - sub.booked > 0 )
+    AND b.id = ?
+    group by b.id`,
+      [basket_id],
+      {
+        dbName: options.dbName,
+        exists: true
       }
     )
   }
