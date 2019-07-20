@@ -8,13 +8,13 @@ var IntegrationPage = {
                 <code>
                 
                 (()=>{
-                    var URI = 'https://savoie.misitioba.com'
+                    var URI = 'https://savoie.misitioba.com';
                     fetch(URI+'/basket-hot/client').then(t=>t.text()).then(script=>{
-                        eval(script)
+                        eval(script);
                         form.generate({
                             el: 'body',
                             prepend: true
-                        })
+                        });
                     })
                 })();
 

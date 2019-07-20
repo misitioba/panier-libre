@@ -97,36 +97,36 @@ form.generate = async options => {
 
     if (!options.model) {
         options.model = [{
-                title: 'Paniers entrants',
-                name: 'basket_id',
-                type: 'reference',
-                funql: {
-                    url: `${URI}/funql`,
-                    name: 'getBaskets',
-                    args: () => {},
-                    transform: function(result) {
-                        return result
-                            .filter(r => {
-                                if (r.is_archived) return false
-                                if (!moment(r.delivery_date).isSameOrAfter(moment(), 'day')) {
-                                    return false
-                                }
-                                return true
-                            })
-                            .map(r => ({
-                                id: r.id,
-                                text: `${moment(r.delivery_date).format('DD/MM/YYYY')} ${
-                  r.description
-                }`
-                            }))
-                    }
+            title: 'Paniers entrants',
+            name: 'basket_id',
+            type: 'reference',
+            funql: {
+                url: `${URI}/funql`,
+                name: 'getBaskets',
+                args: () => { },
+                transform: function (result) {
+                    return result
+                        .filter(r => {
+                            if (r.is_archived) return false
+                            if (!moment(r.delivery_date).isSameOrAfter(moment(), 'day')) {
+                                return false
+                            }
+                            return true
+                        })
+                        .map(r => ({
+                            id: r.id,
+                            text: `${moment(r.delivery_date).format('DD/MM/YYYY')} ${
+                                r.description
+                                }`
+                        }))
                 }
-            },
-            {
-                title: 'Email'.toUpperCase(),
-                name: 'email',
-                type: 'text'
             }
+        },
+        {
+            title: 'Email',
+            name: 'email',
+            type: 'text'
+        }
         ]
     }
 
@@ -195,7 +195,7 @@ form.generate = async options => {
     // submit
     var submit = document.createElement('button')
     submit.innerHTML = options.submit.text
-    submit.onclick = function() {
+    submit.onclick = function () {
         var data = {}
         options.model.forEach(m => {
             let id = `bhf_control_${m.name}`
