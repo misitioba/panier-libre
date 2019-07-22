@@ -5,7 +5,7 @@ var BookBasketComponent = {
             <h2>Réservation manuelle</h2>
             <div class="form_group">
                 <label>Panier</label>
-                <select v-model="form.basket_id">
+                <select v-model="form.basket_id" class="select">
                     <option v-for="option in baskets" v-bind:value="option.id" v-html="getBasketSelectDescription(option)">
                     </option>
                 </select>
@@ -87,7 +87,9 @@ var BookBasketComponent = {
         },
         async save() {
             if (!this.form.basket_id) return alert('Champs obligatoires: Panier')
-            if (!this.form.bulkSubscribers && !this.form.email) { return alert('Champs obligatoires: Email') }
+            if (!this.form.bulkSubscribers && !this.form.email) {
+                return alert('Champs obligatoires: Email')
+            }
             this.form.date = Date.now()
             try {
                 await window.api.funql({

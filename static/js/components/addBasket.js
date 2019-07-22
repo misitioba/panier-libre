@@ -65,10 +65,12 @@ padding: 5px 20px;
         `,
             bookingList: {
                 colsTransforms: {
-                    is_canceled: () => 'Annulé'.toUpperCase()
+                    is_canceled: () => 'Annulé'.toUpperCase(),
+                    is_subscriber: () => `est abonné`.toUpperCase()
                 },
                 valueTransforms: {
                     date: v => moment(v.date).format('DD/MM/YYYY HH[h]mm'),
+                    is_subscriber: v => (v.is_subscriber ? `Oui` : ``),
                     is_canceled: v => ({
                         component: 'toggle-component',
                         params: {},
@@ -87,8 +89,8 @@ padding: 5px 20px;
                         }
                     })
                 },
-                cols: ['email', 'date', 'is_canceled'],
-                gridColumns: '1fr 1fr 1fr'
+                cols: ['email', 'date', 'is_canceled', 'is_subscriber'],
+                gridColumns: '1fr 1fr 1fr 1fr'
             },
             form: {
                 delivery_date: '',
@@ -183,17 +185,17 @@ padding: 5px 20px;
 
         if (this.params.mode === 'edit') {
             this.fetchDetails(this.params.id)
+        } else {
+            this.formCopy = Object.assign({}, this.form)
         }
 
         this.$watch(
             'form',
             () => {
-                if (this.params.mode === 'edit') {
-                    if (getObjectDiff(this.form, this.formCopy).length !== 0) {
-                        this.$emit('onDirty', true)
-                    } else {
-                        this.$emit('onDirty', false)
-                    }
+                if (getObjectDiff(this.form, this.formCopy).length !== 0) {
+                    this.$emit('onDirty', true)
+                } else {
+                    this.$emit('onDirty', false)
                 }
             }, {
                 deep: true

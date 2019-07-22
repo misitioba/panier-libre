@@ -12,16 +12,21 @@ Vue.component('table-component', {
         <div class="table_component" ref="root">
             <div class="table">
                 <div class="row header">
-                    <div class="col" v-for="(col, index) in getCols" :key="col">
+                    <div class="col" v-for="(col, index) in getCols" :key="col" @click="toggleSort(col)">
                         <span v-html="transformColumn(col)"></span>
+                        <span>
+                            <i v-show="sorts[col]==1" class="fas fa-sort-down"></i>
+                            <i v-show="sorts[col]==-1" class="fas fa-sort-up"></i>
+                        </span>
                     </div>
                 </div>
                 <div v-show="items.length===0">
                     <p class="empty_text"><span>Pas d'enregistrements :(</span></p>
                 </div>
-                <div v-for="(item, index) in items" :class="getRowClass(item)"  :key="item.id" @click="$emit('clickRow', item.id, item)">
+                <div v-for="(item, index) in sortedItems" :class="getRowClass(item)"  :key="item.id" @click="$emit('clickRow', item.id, item)">
                     <div class="col" v-for="(col, index) in getCols" @click="cellClick($event,item,col)">
                         <span v-html="transformValue(item,col)" v-show="!isComponent(transformValue(item,col))"> </span>
+                        
                         <component v-show="isComponent(transformValue(item,col))""  v-bind:is="getComponentName(transformValue(item,col))" @mounted="p=>onColValueCmpMounted(transformValue(item,col),p)"></component>
                     </div>
                 </div>
@@ -47,13 +52,18 @@ font-size: 12px;
                 margin-top:10px;
             }
             .table_component .row{
+                
                 display: grid;
                 grid-template-columns: ${
   this.gridColumns ? this.gridColumns : '60px 1fr 1fr'
 };
                 padding:5px;
             }
+            .table_component .body_row{
+                cursor:pointer;
+            }
             .table_component .row.header{
+                cursor:pointer;
                 background-color:#975d50;
             }
             .table_component .row.header .col{
@@ -69,7 +79,12 @@ font-weight: bold;
             @media only screen and (max-width: 639px) {
                 
             }
-        `
+        `,
+            sorts: (() => {
+                var r = {}
+                this.cols.forEach(c => (r[c] = 0))
+                return r
+            })()
         }
     },
     computed: {
@@ -77,16 +92,51 @@ font-weight: bold;
             return (
                 this.cols || (this.items.length > 0 && Object.keys(this.items[0])) || []
             )
+        },
+        sortedItems() {
+            let col = Object.keys(this.sorts).find(col => this.sorts[col] !== 0)
+            let dir = this.sorts[col]
+            console.log('compute sortedItems', {
+                col,
+                dir
+            })
+            if (!col) {
+                return this.items
+            } else {
+                console.log('sorted by', col, dir)
+                let sorted = this.items.sort((a, b) => {
+                    return a[col] > b[col] ? -1 : 1
+                })
+                if (dir == -1) {
+                    sorted = sorted.reverse()
+                }
+                return sorted
+            }
         }
     },
     methods: {
+        toggleSort(col) {
+            if (this.sorts[col] === 0) {
+                this.sorts[col] = 1
+            } else {
+                this.sorts[col] = this.sorts[col] * -1
+            }
+
+            Object.keys(this.sorts)
+                .filter(c => c != col)
+                .forEach(col => {
+                    this.sorts[col] = 0
+                })
+
+            this.$forceUpdate()
+        },
         cellClick(e, item, col) {
             if (this.isComponent(this.transformValue(item, col))) {
                 e.stopPropagation()
             }
         },
         getRowClass(item) {
-            return `row ${item._rowClass || ''}`
+            return `row body_row ${item._rowClass || ''}`
         },
         onColValueCmpMounted(colValue, cmp) {
             colValue.mounted && colValue.mounted(cmp)
@@ -118,5 +168,16 @@ font-weight: bold;
         styles.setAttribute('scoped', '')
         styles.innerHTML = this.styles
         this.$refs.root.appendChild(styles)
+
+        this.cols.forEach(col => {
+            this.sorts[col] = 0
+        })
+
+        this.$on('resetSorting', () => {
+            Object.keys(this.sorts).forEach(col => {
+                this.sorts[col] = 0
+            })
+            this.$forceUpdate()
+        })
     }
 })

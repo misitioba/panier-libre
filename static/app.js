@@ -5,7 +5,8 @@ const routes = [
     { path: '/', component: HomeComponent },
     { path: '/book-basket', component: BookBasketComponent },
     { path: '/clients-list', component: ClientsListComponent },
-    { path: '/form-integration', component: IntegrationPage }
+    { path: '/form-integration', component: IntegrationPage },
+    { path: '/basket-models', component: BasketModelsPage }
 ]
 const router = new VueRouter({
     routes

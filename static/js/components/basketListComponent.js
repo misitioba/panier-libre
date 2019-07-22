@@ -6,6 +6,9 @@ Vue.component('basket-list', {
                 <button class="btn" @click="addBasket">Ajouter panier</button>
                 <button class="btn" @click="$router.push('book-basket')">Réservation manuelle</button>
                 <button class="btn" @click="$router.push('clients-list')">Nos clients</button>
+                <!--
+                <button class="btn" @click="$router.push('basket-models')">Modèles de panier</button>
+                -->
                 <button class="btn" @click="$router.push('form-integration')">Côté client</button>
                 
             </div>
@@ -16,18 +19,18 @@ Vue.component('basket-list', {
             </div>
             <div class="">
                 <label>Ordre par</label>
-                <select v-model="orderByField">
+                <select v-model="orderByField" class="select">
                     <option v-for="option in orderByList" v-bind:value="option.id" v-html="option.description">
                     </option>
                 </select>
-                <select v-model="orderByFieldDirection">
+                <select v-model="orderByFieldDirection" class="select">
                     <option v-for="option in ['ASC','DESC']" v-bind:value="option" v-html="option">
                     </option>
                 </select>
             </div>
             </div>
             
-            <table-component :gridColumns="gridColumns" :items="filteredBaskets" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" @clickRow="p=>$emit('editBasket', p)"></table-component>
+            <table-component ref="table" :gridColumns="gridColumns" :items="filteredBaskets" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" @clickRow="p=>$emit('editBasket', p)"></table-component>
 
         </div>
     `,
@@ -97,6 +100,9 @@ Vue.component('basket-list', {
             })
             if (this.orderByFieldDirection === 'DESC') {
                 items = items.reverse()
+            }
+            if (this.$refs.table) {
+                this.$refs.table.$emit('resetSorting')
             }
             return items
         }

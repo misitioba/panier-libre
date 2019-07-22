@@ -2,9 +2,10 @@ Vue.component('toggle-component', {
     template: `
         <div class="toggle_component" ref="root" @click="toggle">
             <div :class="!this.value?'left active':'left'">
-                <i class="far fa-circle" v-show="!value"></i>
+                <span v-show="!value">N</span>
             </div>
             <div :class="this.value?'right active':'right'">
+                <span v-show="value">O</span>
             </div>
         </div>
     `,
@@ -32,8 +33,11 @@ align-items: center;
             .toggle_component .left{
                 background-color:transparent;
             }
-            .toggle_component .left i{
+            .toggle_component span{
                 font-size: 10px;
+            }
+            .toggle_component .right span{
+                color:white
             }
             .toggle_component .left.active{
                 background-color:#ddcde7;
