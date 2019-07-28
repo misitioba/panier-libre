@@ -4,13 +4,6 @@ Vue.component('basket-list', {
             <div class="btn_group">
                 <button class="btn" @click="refresh">Refresh</button>
                 <button class="btn" @click="addBasket">Ajouter panier</button>
-                <button class="btn" @click="$router.push('book-basket')">Réservation manuelle</button>
-                <button class="btn" @click="$router.push('clients-list')">Nos clients</button>
-                <!--
-                <button class="btn" @click="$router.push('basket-models')">Modèles de panier</button>
-                -->
-                <button class="btn" @click="$router.push('form-integration')">Côté client</button>
-                
             </div>
             <div class="filters">
             <div class="">
@@ -59,7 +52,7 @@ Vue.component('basket-list', {
             },
             cols: [
                 'creation_date',
-                'description',
+                'title',
                 'quantity',
                 'bookings',
                 'available',

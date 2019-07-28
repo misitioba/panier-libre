@@ -1,4 +1,4 @@
-var ClientsListComponent = {
+export default {
     name: 'clients-list',
     props: [],
     template: `

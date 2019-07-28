@@ -1,8 +1,12 @@
-Vue.component('add-basket', {
+Vue.component('basket-details', {
     props: ['params'],
     template: `
         <div class="add_basket" ref="root">
             <h2 v-html="title"></h2>
+            <div class="form_group">
+                <label>Title</label>
+                <input type="text" v-model="form.title" />
+            </div>
             <div class="form_group">
                 <label>Description <span>(Qu'est-ce qu'il y a à l'intérieur)</span></label>
                 <input type="text" v-model="form.description" />
@@ -26,6 +30,12 @@ Vue.component('add-basket', {
             <div class="form_group" v-show="form.id">
                 <label>Paniers disponibles pour réservation</label>
                 <input type="text" :value="availableBaskets" readonly />
+            </div>
+            <div class="form_group">
+                <label>Les abonnés</label>
+                <toggle-component ref="toggleSubscribers" @toggle="()=>form.bulkSubscribers=!form.bulkSubscribers"></toggle-component>
+                <p></p>
+                <p class="quote">Cela ajoutera en masse tous les clients abonnés.</p>
             </div>
             <div class="btn_group">
                 <button class="btn" @click="save">Enregistrer</button>
@@ -93,6 +103,7 @@ padding: 5px 20px;
                 gridColumns: '1fr 1fr 1fr 1fr'
             },
             form: {
+                bulkSubscribers: false,
                 delivery_date: '',
                 bookings: []
             },

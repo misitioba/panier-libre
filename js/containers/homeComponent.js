@@ -1,4 +1,4 @@
-const HomeComponent = {
+export default {
     name: 'HomeComponent',
     template: `
     <div>
@@ -30,7 +30,7 @@ const HomeComponent = {
             this.modalCmpParams = {
                 mode: 'create'
             }
-            this.modalCmp = 'add-basket'
+            this.modalCmp = 'basket-details'
         },
         editBasket(id) {
             this.modalCmpParams = {
@@ -38,7 +38,7 @@ const HomeComponent = {
                 title: 'Edition',
                 mode: 'edit'
             }
-            this.modalCmp = 'add-basket'
+            this.modalCmp = 'basket-details'
         }
     },
     computed: {

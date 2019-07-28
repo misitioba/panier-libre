@@ -1,4 +1,4 @@
-var IntegrationPage = {
+export default {
     props: [],
     template: `
         <div class="integration_page" ref="root" @keyup.enter="save" tabindex="0" @keyup.esc="$router.push('/')">

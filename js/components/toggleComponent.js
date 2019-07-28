@@ -61,6 +61,7 @@ align-items: center;
         toggle() {
             this.value = !this.value
             this.$emit('toggle', this.value)
+            this.$emit('input', this.value)
         }
     },
     mounted() {

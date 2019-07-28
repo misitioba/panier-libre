@@ -1,4 +1,4 @@
-var BookBasketComponent = {
+export default {
     props: [],
     template: `
         <div class="book_basket" ref="root" @keyup.enter="save" tabindex="0" @keyup.esc="$router.push('/')">
@@ -13,8 +13,13 @@ var BookBasketComponent = {
                 <p class="quote">Nous répertorions ici tous les paniers non archivés avec une date de livraison égale ou supérieure à celle d'aujourd'hui.</p>
             </div>
             <div class="form_group" v-show="!form.bulkSubscribers">
-                <label>Email</label>
-                <input type="text" v-model="form.email" />
+                <label>Client</label>
+                <select v-model="form.client_id" class="select">
+                    <option v-for="option in clients" v-bind:value="option.id" v-html="getClientDescription(option)">
+                    </option>
+                </select>
+                <p></p>
+                <p class="quote">Nous répertorions ici tous les paniers non archivés avec une date de livraison égale ou supérieure à celle d'aujourd'hui.</p>
             </div>
             <div class="form_group">
                 <label>Les abonnés</label>
@@ -59,15 +64,27 @@ var BookBasketComponent = {
                 basket_id: '',
                 bulkSubscribers: false
             },
-            baskets: []
+            baskets: [],
+            clients: []
         }
     },
     computed: {},
     methods: {
+        getClientDescription(item) {
+            return item.email
+        },
         getBasketSelectDescription(item) {
             return `${moment(item.delivery_date).format('DD/MM/YYYY')} ${
         item.description
       }`
+        },
+        async fetchClients() {
+            this.clients = await window.api.funql({
+                name: 'getClients',
+                transform: function(items) {
+                    return items
+                }
+            })
         },
         async fetchBaskets() {
             this.baskets = await window.api.funql({
@@ -87,8 +104,8 @@ var BookBasketComponent = {
         },
         async save() {
             if (!this.form.basket_id) return alert('Champs obligatoires: Panier')
-            if (!this.form.bulkSubscribers && !this.form.email) {
-                return alert('Champs obligatoires: Email')
+            if (!this.form.bulkSubscribers && !this.form.client_id) {
+                return alert('Champs obligatoires: Client')
             }
             this.form.date = Date.now()
             try {
@@ -96,11 +113,12 @@ var BookBasketComponent = {
                     name: 'saveBasketBooking',
                     args: [this.form]
                 })
-                router.push('/')
+                this.$router.push('/')
             } catch (err) {
                 if (err === 'BOOKING_EXISTS') {
                     return alert('Ce client avait déjà réservé')
                 }
+                console.warn(err)
                 return alert(ERROR.API)
             }
         }
@@ -111,6 +129,7 @@ var BookBasketComponent = {
         styles.innerHTML = this.styles
         this.$refs.root.appendChild(styles)
         this.fetchBaskets()
+        this.fetchClients()
         this.$refs.toggleSubscribers.$emit('set', this.form.bulkSubscribers)
     }
 }

@@ -1,3 +1,6 @@
+const scopeCss = require('scope-css')
+var uniqid = require('uniqid')
+
 window.COL_TRANSFORM = {
     upperCaseTransform: () =>
         col
@@ -9,6 +12,7 @@ window.COL_TRANSFORM = {
 Vue.component('table-component', {
     props: ['items', 'colsTransforms', 'valueTransforms', 'cols', 'gridColumns'],
     template: `
+        <div ref="scope">
         <div class="table_component" ref="root">
             <div class="table">
                 <div class="row header">
@@ -31,6 +35,7 @@ Vue.component('table-component', {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     `,
     data() {
@@ -61,6 +66,9 @@ font-size: 12px;
             }
             .table_component .body_row{
                 cursor:pointer;
+            }
+            .table_component input, .table_component select{
+                width:100%;
             }
             .table_component .row.header{
                 cursor:pointer;
@@ -142,11 +150,13 @@ font-weight: bold;
             colValue.mounted && colValue.mounted(cmp)
         },
         isComponent(colValue) {
+            if (!colValue) return false
             return (
                 typeof colValue === 'object' && typeof colValue.component === 'string'
             )
         },
         getComponentName(colValue) {
+            if (!colValue) return ''
             return colValue.component
         },
         transformColumn(col) {
@@ -161,13 +171,18 @@ font-weight: bold;
         transformValue(item, col) {
             let transforms = this.valueTransforms || {}
             return transforms[col] ? transforms[col](item) : item[col]
+        },
+        applyScopedStyles() {
+            this.$refs.scope.id = `table_${uniqid()}`
+            let styles = document.createElement('style')
+            styles.setAttribute('scoped', '')
+            styles.innerHTML = scopeCss(this.styles, `#${this.$refs.scope.id}`)
+            this.$refs.root.appendChild(styles)
         }
     },
+
     mounted() {
-        let styles = document.createElement('style')
-        styles.setAttribute('scoped', '')
-        styles.innerHTML = this.styles
-        this.$refs.root.appendChild(styles)
+        this.applyScopedStyles()
 
         this.cols.forEach(col => {
             this.sorts[col] = 0

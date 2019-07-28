@@ -12,9 +12,9 @@ module.exports = app => {
                 }
             }
 
-            if (!form.email) {
+            if (!form.client_id && !form.bulkSubscribers) {
                 return {
-                    err: 'EMAIL_REQUIRED'
+                    err: 'CLIENT_ID_REQUIRED'
                 }
             }
 
@@ -34,13 +34,18 @@ module.exports = app => {
                 return await addSubscribersBulk(form, this)
             }
 
-            let { email, basket_id } = form
+            let { client_id, basket_id } = form
             form.creation_date = form.date
-            let client = await getClientByEmail(email, this)
+            console.log('CLIENT_ID', client_id)
+            let client = await getClientById(client_id, this)
             if (!client) {
-                client = await createClient(form, this)
+                if (form.email) {
+                    client = await createClient(form, this)
+                    client_id = client.id
+                } else {
+                    throw new Error('CLIENT_NOT_FOUND')
+                }
             }
-            let client_id = client.id
 
             if (await hasBooking(client_id, basket_id, this)) {
                 return {
@@ -113,6 +118,12 @@ module.exports = app => {
         single: true
       }
     )
+  }
+  async function getClientById (id, options) {
+    return await app.dbExecute('SELECT * FROM clients WHERE id = ?', [id], {
+      dbName: options.dbName,
+      single: true
+    })
   }
 
   async function isBasketAvailableForBooking (basket_id, options) {

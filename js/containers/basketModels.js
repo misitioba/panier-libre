@@ -1,10 +1,15 @@
-var BasketModelsPage = {
+export default {
     name: 'BasketModelsPage',
     props: [],
     template: `
         <div class="basket_models" ref="root" @keyup.enter="save" tabindex="0" @keyup.esc="$router.push('/')">
+        <div class="btn_group">
+                <button class="btn" @click="refresh">Refresh</button>
+                <button class="btn" @click="addItem">Ajouter</button>
+                <button class="btn" @click="()=>$router.push('/')">Retour</button>
+                </div>
             <h2>Modèles de panier</h2>
-            
+            <p>Les modèles sans description seront cachés dans d'autres vues.</p>
             <table-component ref="table" :gridColumns="gridColumns" :items="items" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" @clickRow="editRow"></table-component>
 
         </div>
@@ -61,7 +66,7 @@ var BasketModelsPage = {
                         cmp.$emit('set', {
                             text: 'Delete',
                             async handler() {
-                                if (window.confirm('Sure?')) {
+                                if (window.confirm('Sûre?')) {
                                     await window.api.funql({
                                         name: 'removeBasketModel',
                                         args: [v.id]
@@ -77,6 +82,15 @@ var BasketModelsPage = {
     },
     computed: {},
     methods: {
+        async addItem() {
+            await api.funql({
+                name: 'addBasketModel',
+                args: [{
+                    creation_date: Date.now()
+                }]
+            })
+            this.refresh()
+        },
         editRow(id) {},
         async refresh() {
             this.items = await window.api.funql({
