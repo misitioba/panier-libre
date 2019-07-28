@@ -11,6 +11,7 @@ import './components/sidebar'
 import './components/selectCmp'
 import './components/datePiker'
 import './components/inputCmp'
+import './components/appFooter'
 
 import Home from './containers/homeComponent'
 import Dashboard from './containers/dashboard'
