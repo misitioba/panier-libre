@@ -12,7 +12,7 @@ export default {
                 <button class="btn" @click="refresh">Refresh</button>
             </div>
             
-            <table-component :gridColumns="gridColumns" :items="items" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
+            <table-component :filters="tableFilters" :gridColumns="gridColumns" :items="items" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
         </div>
         </div>
     `,
@@ -28,6 +28,11 @@ export default {
                 
             }
         `,
+            tableFilters: {
+                email: ['include', 'gt', 'gte', 'lt', 'lte', 'equal'],
+                quantity: ['include', 'gt', 'gte', 'lt', 'lte', 'equal'],
+                delivery_date: ['gt', 'gte', 'lt', 'lte', 'equal']
+            },
             gridColumns: '1fr 1fr 1fr 1fr 1fr 1fr',
             colsTransforms: {
                 email: () => 'CLIENT',
@@ -68,12 +73,13 @@ export default {
                     component: 'select-cmp',
                     field: 'basket_id',
                     prefetch: {
+                        cache: 5000,
                         name: 'getBaskets',
                         transform: items => {
                             return items.map(i => {
                                 return {
                                     value: i.id,
-                                    text: i.description,
+                                    text: `${i.title} (${i.description})`,
                                     delivery_date: i.delivery_date
                                 }
                             })
