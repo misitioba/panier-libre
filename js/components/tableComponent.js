@@ -10,10 +10,35 @@ window.COL_TRANSFORM = {
 }
 
 Vue.component('table-component', {
-    props: ['items', 'colsTransforms', 'valueTransforms', 'cols', 'gridColumns'],
+    props: [
+        'items',
+        'colsTransforms',
+        'valueTransforms',
+        'cols',
+        'gridColumns',
+        'filters'
+    ],
     template: `
         <div ref="scope">
         <div class="table_component" ref="root">
+            <div class="" v-show="!!filters">
+                <button @click="filtersState.show=true" v-show="!filtersState.show">Filters</button>
+                <button @click="filtersState.show=false" v-show="filtersState.show">Hide Filters</button>
+                <div v-show="filtersState.show">
+                    <div class="filterRow" v-for="(col, index) in getCols" :key="col" v-show="!!filters[col]">
+                        <label v-html="transformColumn(col)"></label>
+                        <select v-model="filtersState[col]">
+                            <option v-for="type in filters[col]" :value="type" v-html="type">
+                            </option>
+                        </select>
+                        
+                        <input  v-model="filtersValue[col]"  @keyup="filterChange" v-if="col.indexOf('date')===-1"/>
+                        
+                        <date-picker v-model="filtersValue[col]" v-if="col.indexOf('date')!==-1" @keyup="filterChange"></date-picker>
+                        
+                    </div>
+                </div>
+            </div>
             <div class="table">
                 <div class="row header">
                     <div class="col" v-for="(col, index) in getCols" :key="col" @click="toggleSort(col)">
@@ -27,10 +52,9 @@ Vue.component('table-component', {
                 <div v-show="items.length===0">
                     <p class="empty_text"><span>Pas d'enregistrements :(</span></p>
                 </div>
-                <div v-for="(item, index) in sortedItems" :class="getRowClass(item)"  :key="item.id" @click="$emit('clickRow', item.id, item)">
+                <div v-for="(item, index) in filteredItems()" :class="getRowClass(item)"  :key="item.id" @click="$emit('clickRow', item.id, item)">
                     <div class="col" v-for="(col, index) in getCols" @click="cellClick($event,item,col)">
                         <span v-html="transformValue(item,col)" v-show="!isComponent(transformValue(item,col))"> </span>
-                        
                         <component v-show="isComponent(transformValue(item,col))""  v-bind:is="getComponentName(transformValue(item,col))" @mounted="p=>onColValueCmpMounted(transformValue(item,col),p)"></component>
                     </div>
                 </div>
@@ -55,6 +79,20 @@ font-size: 12px;
                 display: grid;
                 grid-template-columns: 1fr;
                 margin-top:10px;
+            }
+            .filterRow{
+                padding:5px;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+            .filterRow select{
+                margin-right: 5px;
+                width: auto !important;
+            }
+            .filterRow label{
+                display: flex;
+justify-content: center;
+align-items: center;
             }
             .table_component .row{
                 
@@ -88,6 +126,10 @@ font-weight: bold;
                 
             }
         `,
+            filtersState: {
+                show: false
+            },
+            filtersValue: {},
             sorts: (() => {
                 var r = {}
                 this.cols.forEach(c => (r[c] = 0))
@@ -101,6 +143,7 @@ font-weight: bold;
                 this.cols || (this.items.length > 0 && Object.keys(this.items[0])) || []
             )
         },
+
         sortedItems() {
             let col = Object.keys(this.sorts).find(col => this.sorts[col] !== 0)
             let dir = this.sorts[col]
@@ -123,6 +166,51 @@ font-weight: bold;
         }
     },
     methods: {
+        filteredItems() {
+            var items = this.sortedItems
+            Object.keys(this.filters).forEach(key => {
+                if (this.filtersState[key] === 'include' && !!this.filtersValue[key]) {
+                    items = items.filter(i => {
+                        let value = this.transformValue(i, key)
+                        if (!value.toString()) {
+                            return true
+                        } else {
+                            return value.toString().indexOf(this.filtersValue[key]) !== -1
+                        }
+                    })
+                }
+
+                /*
+                                && !!this.filtersValue[key] && value.toString().length === 10 &&
+                                    value.toString().split('/').length === 3 &&
+                                    parseInt(this.filtersValue[key]).toString().length > 10
+                                    */
+
+                items = items.filter(i => {
+                    let value = this.transformValue(i, key)
+
+                    if (
+                        ['gte', 'gt', 'lt', 'lte', 'equal'].includes(this.filtersState[key])
+                    ) {
+                        let symbols = {
+                            gt: '>',
+                            gte: '>=',
+                            lt: '<',
+                            lte: '<=',
+                            equal: '=='
+                        }
+                        let mod = this.filtersState[key]
+                        return eval(`i[key] ${symbols[mod]} this.filtersValue[key]`)
+                    }
+
+                    return true
+                })
+            })
+            return items
+        },
+        filterChange() {
+            this.$forceUpdate()
+        },
         toggleSort(col) {
             if (this.sorts[col] === 0) {
                 this.sorts[col] = 1
@@ -180,7 +268,17 @@ font-weight: bold;
             this.$refs.root.appendChild(styles)
         }
     },
+    created() {
+        if (this.filters) {
+            Object.keys(this.filters).forEach(k => {
+                if (this.filters[k].length > 0) {
+                    this.filtersState[k] = this.filters[k][0]
+                }
+            })
 
+            this.$watch('filtersState', () => this.$forceUpdate(), { deep: true })
+        }
+    },
     mounted() {
         this.applyScopedStyles()
 
