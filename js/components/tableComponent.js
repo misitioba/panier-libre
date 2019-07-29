@@ -21,7 +21,7 @@ Vue.component('table-component', {
     template: `
         <div ref="scope">
         <div class="table_component" ref="root">
-            <div class="" v-show="!!filters">
+            <div class="" v-if="!!filters">
                 <button @click="filtersState.show=true" v-show="!filtersState.show">Filters</button>
                 <button @click="filtersState.show=false" v-show="filtersState.show">Hide Filters</button>
                 <div v-show="filtersState.show">
@@ -168,6 +168,7 @@ font-weight: bold;
     methods: {
         filteredItems() {
             var items = this.sortedItems
+            if (!this.filters) return items
             Object.keys(this.filters).forEach(key => {
                 if (this.filtersState[key] === 'include' && !!this.filtersValue[key]) {
                     items = items.filter(i => {
@@ -181,16 +182,17 @@ font-weight: bold;
                 }
 
                 /*
-                                && !!this.filtersValue[key] && value.toString().length === 10 &&
-                                    value.toString().split('/').length === 3 &&
-                                    parseInt(this.filtersValue[key]).toString().length > 10
-                                    */
+                                                && !!this.filtersValue[key] && value.toString().length === 10 &&
+                                                    value.toString().split('/').length === 3 &&
+                                                    parseInt(this.filtersValue[key]).toString().length > 10
+                                                    */
 
                 items = items.filter(i => {
                     let value = this.transformValue(i, key)
 
                     if (
-                        ['gte', 'gt', 'lt', 'lte', 'equal'].includes(this.filtersState[key])
+                        this.filtersValue[key] !== '' &&
+                        !!this.filtersValue[key] && ['gte', 'gt', 'lt', 'lte', 'equal'].includes(this.filtersState[key])
                     ) {
                         let symbols = {
                             gt: '>',
