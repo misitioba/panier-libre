@@ -24,7 +24,8 @@ function withVue() {
         if (typeof axios === 'undefined') {
             window.axios = require('axios')
         }
-        await ImportCDNJS('/api.js')
+        window._funqlGetMode = true
+        await ImportCDNJS('__API_ENDPOINT_URL__api.js')
         var endpointURL = '__API_ENDPOINT_URL__'
         new Vue({
             el,
@@ -36,7 +37,7 @@ function withVue() {
                     count: 0
                 }
             },
-            mounted() {},
+            mounted() { },
             created() {
                 window.api.funqlEndpointURL = endpointURL
                 console.log(endpointURL)

@@ -90,7 +90,11 @@ cursor: pointer;
             try {
                 let r = await api.funql({
                     name: 'saveCustomerOrder',
-                    args: [Object.assign({}, this.order)]
+                    args: [Object.assign({}, this.order, {
+                        items: this.order.items.map(item => {
+                            return Object.assign({}, item)
+                        })
+                    })]
                 })
                 r = r.data ? r.data : r
                 if (r.err) throw new Error(r.err)
@@ -125,9 +129,9 @@ cursor: pointer;
             }
         },
         async fetchBaskets() {
-            this.baskets = (await api.funql({
+            let result = (await api.funql({
                 name: 'getBaskets',
-                transform: function(result) {
+                transform: function (result) {
                     return result.filter(r => {
                         if (r.is_archived) return false
                         if (!moment(r.delivery_date).isSameOrAfter(moment(), 'day')) {
@@ -136,11 +140,12 @@ cursor: pointer;
                         return true
                     })
                 }
-            })).data
+            }))
+            this.baskets = result.data ? result.data : result;
             this.fetched = true
         }
     },
-    created() {},
+    created() { },
     mounted() {
         this.fetchBaskets()
     }
