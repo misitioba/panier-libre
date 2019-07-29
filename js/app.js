@@ -1,3 +1,5 @@
+import ImportCDNJS from 'import-cdn-js'
+
 import './components/basketDetails'
 import './components/backComponent'
 import './components/basketListComponent'
@@ -20,6 +22,7 @@ import Clients from './containers/clientsList'
 import Integration from './containers/integrationPage'
 import BasketModels from './containers/basketModels'
 import Programation from './containers/programation'
+ImportCDNJS('/analytics.js')
 
 window.ERROR = {
     API: 'Erreur de serveur ou de connexion'
