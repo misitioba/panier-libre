@@ -1,6 +1,12 @@
+import {
+    default as stylesMixin,
+    template as styleMixinTmpl
+} from '../mixins/styles'
+
 Vue.component('basket-details', {
     props: ['params'],
-    template: `
+    mixins: [stylesMixin],
+    template: styleMixinTmpl(`
         <div class="add_basket" ref="root">
             <h2 v-html="title"></h2>
             <div class="form_group">
@@ -9,7 +15,8 @@ Vue.component('basket-details', {
             </div>
             <div class="form_group">
                 <label>Description <span>(Qu'est-ce qu'il y a à l'intérieur)</span></label>
-                <input type="text" v-model="form.description" />
+                <textarea type="text" v-model="form.description">
+                </textarea>
             </div>
             <div class="form_group">
                 <label>Quantité produite</label>
@@ -45,7 +52,7 @@ Vue.component('basket-details', {
                 <button class="btn btn-danger" @click="()=>remove()" v-show="form.id">Effacer</button>
             </div>
         </div>
-    `,
+    `),
     data() {
         var self = this
         return {
@@ -69,7 +76,16 @@ padding: 5px 20px;
             .btn_group{
                 margin-top:30px;
             }
+            textarea{
+                min-height:100px;
+            }
             @media only screen and (max-width: 639px) {
+                
+            }
+            @media only screen and (max-width: 1047px) {
+                
+            }
+            @media only screen and (min-width: 1048px) {
                 
             }
         `,

@@ -1,4 +1,5 @@
-import stylesMixin from '../mixins/stylesMixin'
+import stylesMixin from '../mixins/styles'
+
 Vue.component('app-footer', {
     mixins: [stylesMixin],
     props: [],
@@ -19,10 +20,10 @@ Vue.component('app-footer', {
             try {
                 let data = {
                     email: this.email,
-                    message: `COMMON_FOOTER_CTA`,
+                    message: `APP_FOOTER_CTA`,
                     creation_date: Date.now()
                 }
-                murlytics.track({ name: 'COMMON_FOOTER_CONTACT_FORM', ...data })
+                murlytics.track({ name: 'APP_FOOTER_CONTACT_FORM', ...data })
                 await api.funql({
                     name: 'contactForm',
                     args: [data]

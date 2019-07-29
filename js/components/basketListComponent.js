@@ -1,5 +1,10 @@
+import {
+    default as stylesMixin,
+    template as styleMixinTmpl
+} from '../mixins/styles'
 Vue.component('basket-list', {
-    template: `
+    mixins: [stylesMixin],
+    template: styleMixinTmpl(`
         <div class="basket_list" ref="root">
             <div class="btn_group">
                 <button class="btn" @click="refresh">Refresh</button>
@@ -16,7 +21,7 @@ Vue.component('basket-list', {
                     <option v-for="option in orderByList" v-bind:value="option.id" v-html="option.description">
                     </option>
                 </select>
-                <select v-model="orderByFieldDirection" class="select">
+                <select  v-model="orderByFieldDirection" class="select dir">
                     <option v-for="option in ['ASC','DESC']" v-bind:value="option" v-html="option">
                     </option>
                 </select>
@@ -26,7 +31,7 @@ Vue.component('basket-list', {
             <table-component ref="table" :gridColumns="gridColumns" :items="filteredBaskets" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" @clickRow="p=>$emit('editBasket', p)"></table-component>
 
         </div>
-    `,
+    `),
     data() {
         return {
             styles: `
@@ -36,6 +41,13 @@ Vue.component('basket-list', {
             .basket_list .filters{
                 display: grid;
                 grid-template-columns: 1fr 1fr; 
+            }
+            select{
+                margin-bottom:5px;
+                max-width:150px;
+            }
+            select.dir{
+                width:80px;
             }
             @media only screen and (max-width: 639px) {
                 
