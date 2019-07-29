@@ -6,28 +6,18 @@ export default {
             
             <div class="editor" ref="editor">
             
-            (()=>{
-                var URI = 'https://savoie.misitioba.com';
-                fetch(URI+'/basket-hot/client').then(t=>t.text()).then(script=>{
-                    eval(script);
-                    form.generate({
-                        el: 'body',
-                        prepend: true
-                    });
-                })
-            })();
+            
+                (function(){
+                    var URI = '${window.publicPath}';
+                    let s = document.createElement('script')
+                    s.src = URI+'/basket-hot/booking_form_client.js?callback=initstcbh'
+                    document.querySelector('body').append(s)
+                    window.initstcbh = function (app){
+                        app.mount('CSS_SELECTOR')
+                    }
+                })();
+            
 
-            /*
-            CONFIGURATION:
-            'el' indicates the root element to attach the generated form from.
-            'body' will attach the form on the top of the page.
-            So, for attaching the form in the bottom, add a custom html tag and indicate his id like:
-
-            form.generate({
-                el:'#formWrapper'
-            })
-
-            */
             </div>
               
             
