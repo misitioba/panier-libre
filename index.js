@@ -21,10 +21,13 @@ module.exports = async(app, config) => {
         })
     )
 
-    app.get(config.getRouteName('booking-form'), async(req, res) => {
+    app.get(config.getRouteName('reserver'), async(req, res) => {
         var fullUrl = req.protocol + '://' + req.get('host')
         res.send(`
                 <!-- CLIENT WEBPAGE -->
+                <head>
+                    <title>Démo Réservation</title>
+                </head>
                 <body>
                 <div class="app_goes_here"></div>
                 <script>
@@ -63,10 +66,13 @@ module.exports = async(app, config) => {
     })
 
     app.loadFunctions({
-        path: config.getPath('shared-functions')
+        path: config.getPath('shared-functions'),
+        scope: {
+            dbName: config.db_name
+        }
     })
 
-    app.enableProgramationsSchedule()
+    // app.enableProgramationsSchedule()
 
     app.get(
         config.getRouteName('/'),
