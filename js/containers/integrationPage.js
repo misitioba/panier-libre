@@ -21,10 +21,7 @@ export default {
             </div>
               
             
-            <div class="btn_group">
-            
-                <button class="btn" @click="()=>$router.push('/')">Retour</button>
-            </div>
+           
         </div>
     `,
     data() {

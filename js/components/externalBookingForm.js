@@ -25,6 +25,7 @@ Vue.component('booking-form', {
         <input class="emailInput" placeholder="votre email" v-model="order.email"/>
         <button class="validateButton" @click="validate">Valider</button>
     </div>
+    <p class="quote_by">Ce système de réservation a été développé par <a target="_blank" href="https://savoie.misitioba.com/">Savoie Tech Coop</a></p>
 </div>    
     `),
     data() {
@@ -32,9 +33,11 @@ Vue.component('booking-form', {
             styles: `
             .booking_form{
                 background-color: white;
-border-radius: 5px;
-border: 3px solid #93c54b;
-padding: 20px;
+                border-radius: 5px;
+                border: 2px solid #b5a075;
+                padding: 20px;
+                margin: 20px;
+                box-shadow: 1px 9px 20px #b5a075;
             }
             .bf_title{
                 font-size:25px;
@@ -44,28 +47,34 @@ padding: 20px;
                 font-size: 24px;
 color: white;
 margin-top: 15px;
-background-color: #93c54b;
+background-color: #b5a075;
 padding: 20px;
             }
             .emailInput{
                 margin-top:15px;
-                border: 1px solid #93c54b;
+                border: 1px solid #b5a075;
 padding: 5px;
 font-size: 14px;
             }
             .validateButton:hover{
                 color: white;
-                background-color: #93c54b;
+                background-color: #b5a075;
             }
             .validateButton{
-                color: #93c54b;
+                color: #b5a075;
 display: block;
 margin-top: 15px;
 background-color: white;
-border: 2px solid #93c54b;
+border: 2px solid #b5a075;
 font-size: 18px;
 font-weight: bold;
 cursor: pointer;
+            }
+            .quote_by{
+                margin-top: 50px;
+font-size: 12px;
+font-style: italic;
+color: gray;
             }
             `,
             order: {
@@ -90,11 +99,13 @@ cursor: pointer;
             try {
                 let r = await api.funql({
                     name: 'saveCustomerOrder',
-                    args: [Object.assign({}, this.order, {
-                        items: this.order.items.map(item => {
-                            return Object.assign({}, item)
+                    args: [
+                        Object.assign({}, this.order, {
+                            items: this.order.items.map(item => {
+                                return Object.assign({}, item)
+                            })
                         })
-                    })]
+                    ]
                 })
                 r = r.data ? r.data : r
                 if (r.err) throw new Error(r.err)
@@ -129,9 +140,9 @@ cursor: pointer;
             }
         },
         async fetchBaskets() {
-            let result = (await api.funql({
+            let result = await api.funql({
                 name: 'getBaskets',
-                transform: function (result) {
+                transform: function(result) {
                     return result.filter(r => {
                         if (r.is_archived) return false
                         if (!moment(r.delivery_date).isSameOrAfter(moment(), 'day')) {
@@ -140,12 +151,12 @@ cursor: pointer;
                         return true
                     })
                 }
-            }))
-            this.baskets = result.data ? result.data : result;
+            })
+            this.baskets = result.data ? result.data : result
             this.fetched = true
         }
     },
-    created() { },
+    created() {},
     mounted() {
         this.fetchBaskets()
     }

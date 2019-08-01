@@ -22,6 +22,9 @@ import Clients from './containers/clientsList'
 import Integration from './containers/integrationPage'
 import BasketModels from './containers/basketModels'
 import Programation from './containers/programation'
+import Orders from './containers/orders'
+import OrdersDetails from './containers/orderDetails'
+
 ImportCDNJS('/analytics.js')
 
 window.ERROR = {
@@ -31,6 +34,8 @@ const routes = [
     { path: '/', component: Dashboard },
     { path: '/paniers', component: Home },
     { path: '/book-basket', component: Baskets },
+    { path: '/orders', component: Orders },
+    { path: '/orders/:id', component: OrdersDetails, name: 'order-details' },
     { path: '/clients-list', component: Clients },
     {
         path: '/form-integration',

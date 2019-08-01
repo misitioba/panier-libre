@@ -27,7 +27,7 @@ Vue.component('bf-baskets-view', {
     grid-template-columns: 50% 50%;
 }
 .basket{
-    background-color:#93c54b;
+    background-color:#b5a075;
     padding:20px;
     border-radius:5px;
     margin:20px 0px;

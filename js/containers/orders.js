@@ -12,7 +12,7 @@ export default {
                 <button class="btn" @click="refresh">Refresh</button>
             </div>
             
-            <table-component :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
+            <table-component @rowClick="rowClick" :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
         </div>
         </div>
     `,
@@ -33,24 +33,18 @@ export default {
                 quantity: ['include', 'gt', 'gte', 'lt', 'lte', 'equal'],
                 delivery_date: ['gt', 'gte', 'lt', 'lte', 'equal']
             },
-            gridColumns: '1fr 1fr 1fr 1fr 1fr 1fr',
+            gridColumns: '1fr 1fr 1fr',
             colsTransforms: {
+                orderId: () => 'id'.toUpperCase(),
                 email: () => 'CLIENT',
-                delivery_date: () => 'Date de livraison'.toUpperCase(),
+                creation_date: () => 'date de création'.toUpperCase(),
                 booking_date: () => 'Date de réservation'.toUpperCase(),
                 is_canceled: () => 'annulé'.toUpperCase(),
                 basket_id: () => 'Panier'.toUpperCase()
             },
-            cols: [
-                'email',
-                'quantity',
-                'basket_id',
-                'booking_date',
-                'delivery_date',
-                'is_canceled'
-            ],
+            cols: ['orderId', 'email', 'creation_date'],
             valueTransforms: {
-                delivery_date: v => moment(v.delivery_date).format('DD/MM/YYYY'),
+                creation_date: v => moment(v.delivery_date).format('DD/MM/YYYY'),
                 booking_date: v => moment(v.booking_date).format('DD/MM/YYYY'),
                 quantity: createEditableColumn({
                     component: 'input-cmp',
@@ -150,9 +144,17 @@ export default {
         }
     },
     methods: {
+        rowClick(itemId, item) {
+            this.$router.push({
+                name: 'order-details',
+                params: {
+                    id: item.orderId
+                }
+            })
+        },
         async refresh() {
             this.items = await window.api.funql({
-                name: 'getDashboardData',
+                name: 'getOrders',
                 transform: function(items) {
                     return items
                 }

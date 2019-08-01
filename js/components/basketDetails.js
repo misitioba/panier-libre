@@ -26,7 +26,8 @@ Vue.component('basket-details', {
                 <label>Date de livraison</label>
                 <input type="text" id="datepicker" ref="delivery_date" />
             </div>
-            <div class="form_group" v-show="form.id">
+
+            <div class="form_group" v-show="form.id" v-if="false">
                 <label>Liste de réservation</label>
                 <div>
                     <table-component :items="form.bookings" :colsTransforms="bookingList.colsTransforms" :valueTransforms="bookingList.valueTransforms" :cols="bookingList.cols" @clickRow="p=>$emit('editBasketBookingItem', p)"
@@ -34,11 +35,16 @@ Vue.component('basket-details', {
                     ></table-component>
                 </div>
             </div>
+            
+            <div class="form_group">
+                <label>Prix</label>
+                <input type="text" v-model="form.price" />
+            </div>
             <div class="form_group" v-show="form.id">
                 <label>Paniers disponibles pour réservation</label>
                 <input type="text" :value="availableBaskets" readonly />
             </div>
-            <div class="form_group">
+            <div class="form_group" v-show="!form.id">
                 <label>Les abonnés</label>
                 <toggle-component ref="toggleSubscribers" @toggle="()=>form.bulkSubscribers=!form.bulkSubscribers"></toggle-component>
                 <p></p>
@@ -171,9 +177,10 @@ padding: 5px 20px;
         async save(closeAfter = true) {
             var alertMsg = v => alert(`Champs requis: ${v}`)
 
-            if (!this.form.description) return alertMsg(`Description`)
-            if (!this.form.quantity) return alertMsg('Quantité produite')
-            if (!this.form.delivery_date) return alertMsg('Date de livraison')
+            if (!this.form.description) return alertMsg(`Description requis`)
+            if (!this.form.quantity) return alertMsg('Quantité produite requis')
+            if (!this.form.price) return alertMsg('Prix requis')
+            if (!this.form.delivery_date) return alertMsg('Date de livraison requis')
 
             if (!this.form.id) {
                 this.form.creation_date = Date.now()

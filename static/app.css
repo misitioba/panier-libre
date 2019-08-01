@@ -6,6 +6,10 @@
     background-color: #ddcde7;
 }
 
+.canceled_row {
+    background-color: #fd9c9c;
+}
+
 select {
     width: 100%;
     font-size: 14px;

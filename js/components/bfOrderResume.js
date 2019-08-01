@@ -39,7 +39,7 @@ Vue.component('bf-order-resume', {
     margin-top: 20px;
 }
 .basket{
-    background-color:#93c54b;
+    background-color:#b5a075;
     padding: 10px;
 
 border-radius: 5px;
@@ -90,7 +90,7 @@ align-items: center;
     text-align:right;
 }
 button{
-    border: 1px solid #93c54b;
+    border: 1px solid #b5a075;
     background-color: white;
     cursor:pointer;
     padding: 2px 15px;

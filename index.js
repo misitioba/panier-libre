@@ -1,4 +1,4 @@
-module.exports = async (app, config) => {
+module.exports = async(app, config) => {
     app.get(
         config.getRouteName('app.js'),
         app.webpackMiddleware({
@@ -14,7 +14,9 @@ module.exports = async (app, config) => {
             output: config.getPath('tmp/booking-form.js'),
             transform(html, req) {
                 var fullUrl = req.protocol + '://' + req.get('host')
-                fullUrl = process.env.DOMAIN || fullUrl
+                if (process.env.NODE_ENV === 'production') {
+                    fullUrl = process.env.DOMAIN || fullUrl
+                }
                 html = html.split('__CALLBACK__').join(req.query.callback)
                 html = html.split('__API_ENDPOINT_URL__').join(fullUrl + '/')
                 return html
@@ -22,7 +24,7 @@ module.exports = async (app, config) => {
         })
     )
 
-    app.get(config.getRouteName('reserver'), async (req, res) => {
+    app.get(config.getRouteName('reserver'), async(req, res) => {
         var fullUrl = req.protocol + '://' + req.get('host')
         res.send(`
                 <!-- CLIENT WEBPAGE -->

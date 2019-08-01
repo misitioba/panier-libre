@@ -12,9 +12,36 @@ async function saveCustomerOrder(order) {
         client = await app.getClientByEmail(order.email)
     }
     order.client_id = client.id
+
+    let available = await Promise.all(
+        order.items.map(item => {
+            return getAvailable(item.id)
+        })
+    )
+    if (available.find(item => parseInt(item) < 1)) {
+        return {
+            err: 'NOT_AVAILABLE'
+        }
+    }
+
     await saveBookings(order)
     await removeAutomaticBookingItems(order)
     await saveOrder(order)
+    return true
+}
+
+async function getAvailable(basket_id) {
+    return (await app.dbExecute(
+        `SELECT 
+        b.quantity-IFNULL(sum(oi.quantity),0) as available
+  FROM baskets as b 
+  LEFT JOIN order_items as oi on oi.basket_id = b.id
+  WHERE b.id = ?
+  GROUP BY b.id`, [basket_id], {
+            dbName: dbName,
+            single: true
+        }
+    )).available
 }
 
 async function saveOrder(order) {

@@ -16,6 +16,9 @@ Vue.component('sidebar', {
                 <li>
                     <button class="btn" @click="$router.push('/paniers')">Paniers</button>
                 </li>
+                <li>
+                <button class="btn" @click="$router.push('/orders')">Commandes</button>
+            </li>
                 <li v-if="false">
                     <button class="btn" @click="$router.push('/programation')">Programmation</button>
                 </li>
@@ -23,21 +26,24 @@ Vue.component('sidebar', {
                 <li>
                     <button class="btn" @click="$router.push('clients-list')">Nos clients</button>
                 </li>
+                <!--
                 <li>
                     <button class="btn" @click="$router.push('basket-models')">Modèles de panier</button>
                 <li>
                 <li>
                     <button class="btn" @click="$router.push('book-basket')">Réservation manuelle</button>
                 </li>
+                -->
+                <li>
+                    <a class="btn" href="${window.cwd(
+    'reserver'
+  )}" target="_blank">Reserver</a>
+                </li>
                 <li>
                     <button class="btn" @click="$router.push('form-integration')">Intégration Web</button>
                 </li>
 
-                <li>
-                    <a class="btn" href="${window.cwd(
-    'booking-form'
-  )}" target="_blank">Ouvrir le formulaire de réservation</a>
-                </li>
+                
                 
             </ul>
 

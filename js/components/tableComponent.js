@@ -22,8 +22,8 @@ Vue.component('table-component', {
         <div ref="scope">
         <div class="table_component" ref="root">
             <div class="" v-if="!!filters">
-                <button @click="filtersState.show=true" v-show="!filtersState.show">Filters</button>
-                <button @click="filtersState.show=false" v-show="filtersState.show">Hide Filters</button>
+                <button class="btn btn-small" @click="filtersState.show=true" v-show="!filtersState.show"><i class="fas fa-filter"></i> Montrer</button>
+                <button class="btn btn-small" @click="filtersState.show=false" v-show="filtersState.show"><i class="fas fa-filter"></i> Cacher</button>
                 <div v-show="filtersState.show">
                     <div class="filterRow" v-for="(col, index) in getCols" :key="col" v-show="!!filters[col]">
                         <label v-html="transformColumn(col)"></label>
@@ -44,15 +44,15 @@ Vue.component('table-component', {
                     <div class="col" v-for="(col, index) in getCols" :key="col" @click="toggleSort(col)">
                         <span v-html="transformColumn(col)"></span>
                         <span>
-                            <i v-show="sorts[col]==1" class="fas fa-sort-down"></i>
-                            <i v-show="sorts[col]==-1" class="fas fa-sort-up"></i>
+                            <i v-show="sorts[col]==1" class="fas fa-sort-alpha-down"></i>
+                            <i v-show="sorts[col]==-1" class="fas fa-sort-alpha-up"></i>
                         </span>
                     </div>
                 </div>
                 <div v-show="items.length===0">
                     <p class="empty_text"><span>Pas d'enregistrements :(</span></p>
                 </div>
-                <div v-for="(item, index) in filteredItems()" :class="getRowClass(item)"  :key="item.id" @click="$emit('clickRow', item.id, item)">
+                <div v-for="(item, index) in filteredItems()" :class="getRowClass(item)"  :key="item.id" @click="onRowClick(item)">
                     <div class="col" v-for="(col, index) in getCols" @click="cellClick($event,item,col)">
                         <span v-html="transformValue(item,col)" v-show="!isComponent(transformValue(item,col))"> </span>
                         <component v-show="isComponent(transformValue(item,col))""  v-bind:is="getComponentName(transformValue(item,col))" @mounted="p=>onColValueCmpMounted(transformValue(item,col),p)"></component>
@@ -166,6 +166,10 @@ font-weight: bold;
         }
     },
     methods: {
+        onRowClick(item) {
+            this.$emit('clickRow', item.id, item)
+            this.$emit('rowClick', item.id, item)
+        },
         filteredItems() {
             var items = this.sortedItems
             if (!this.filters) return items
@@ -182,10 +186,10 @@ font-weight: bold;
                 }
 
                 /*
-                                                && !!this.filtersValue[key] && value.toString().length === 10 &&
-                                                    value.toString().split('/').length === 3 &&
-                                                    parseInt(this.filtersValue[key]).toString().length > 10
-                                                    */
+                                                                                        && !!this.filtersValue[key] && value.toString().length === 10 &&
+                                                                                            value.toString().split('/').length === 3 &&
+                                                                                            parseInt(this.filtersValue[key]).toString().length > 10
+                                                                                            */
 
                 items = items.filter(i => {
                     let value = this.transformValue(i, key)
