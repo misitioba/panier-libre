@@ -11,65 +11,160 @@ async function saveCustomerOrder(order) {
     if (order.email) {
         client = await app.getClientByEmail(order.email)
     }
+    if (order.fullname) {
+        client.fullname = order.fullname
+        await app.api.saveClient(
+            Object.assign({}, client, {
+                _fields: ['fullname']
+            })
+        )
+    }
     order.client_id = client.id
 
-    let available = await Promise.all(
+    let itemsWithAvailable = await Promise.all(
         order.items.map(item => {
-            return getAvailable(item.id)
+            return (async() => {
+                let i = Object.assign({}, item)
+                i.available = await getAvailable(item.id, order.client_id)
+                i.basket = await getBasket(item.id)
+                if (i.available === null) {
+                    i.available = i.basket.quantity
+                } else {
+                    i.available = parseInt(i.available)
+                }
+                i.quantity = parseInt(i.quantity)
+                return i
+            })()
         })
     )
-    if (available.find(item => parseInt(item) < 1)) {
-        return {
-            err: 'NOT_AVAILABLE'
+
+    for (var index in itemsWithAvailable) {
+        let item = itemsWithAvailable[index]
+        console.log('TRACE', {
+            title: item.basket.title,
+            available: item.available,
+            total: item.basket.quantity,
+            quantity: item.quantity
+        })
+        if (item.quantity > item.available) {
+            let message = ''
+
+            if (item.available === 0) {
+                message = `Le produit ${item.basket.title} du ${
+          item.basket.delivery_date
+        } n'est pas disponible.`
+            } else {
+                message = `${item.basket.title} du ${
+          item.basket.delivery_date
+        }, il ne reste que ${item.available} paniers.`
+            }
+
+            return {
+                err: {
+                    code: 'NOT_AVAILABLE',
+                    message
+                }
+            }
         }
     }
-
-    await saveBookings(order)
-    await removeAutomaticBookingItems(order)
     await saveOrder(order)
     return true
 }
 
-async function getAvailable(basket_id) {
-    return (await app.dbExecute(
+async function getBasket(id) {
+    let b = await app.dbExecute(
+        `SELECT title, delivery_date, quantity FROM baskets WHERE id = ?`, [id], {
+            dbName,
+            single: true
+        }
+    )
+    b.delivery_date = require('moment')(b.delivery_date).format('DD/MM/YYYY')
+    return b
+}
+
+async function getAvailable(basket_id, client_id) {
+    var r = await app.dbExecute(
         `SELECT 
         b.quantity-IFNULL(sum(oi.quantity),0) as available
   FROM baskets as b 
   LEFT JOIN order_items as oi on oi.basket_id = b.id
-  WHERE b.id = ?
-  GROUP BY b.id`, [basket_id], {
+  LEFT JOIN orders as o on o.id = oi.order_id
+  WHERE b.id = ? AND o.client_id <> ?
+  GROUP BY b.id`, [basket_id, client_id], {
             dbName: dbName,
             single: true
         }
-    )).available
+    )
+    return (r && r.available) || null
 }
 
 async function saveOrder(order) {
-    let now = getNow()
-
-    // remove existing orders from today
     let moment = require('moment-timezone')
     var getMoment = () => moment().tz('Europe/Paris')
-    let startOfDay = getMoment()
-        .startOf('day')
-        ._d.getTime()
-    let endOfDay = getMoment()
-        .endOf('day')
-        ._d.getTime()
+    let now = getNow()
 
-    await app.dbExecute(
-        `DELETE FROM orders WHERE client_id = ? AND creation_date > ? AND creation_date < ?`, [order.client_id, startOfDay, endOfDay], {
-            dbName
-        }
-    )
+    let order_id = null
 
-    let result = await app.dbExecute(
-        `INSERT INTO orders (client_id, creation_date)VALUES(?,?)`, [order.client_id, now], {
-            dbName: dbName
+    // search for an existing order in the last week with some of the selected baskets
+    let searchOneOrderQuery = `SELECT o.id FROM
+     orders as o
+     JOIN order_items as oi on oi.order_id = o.id
+     WHERE 
+      basket_id in (${order.items.map(b => b.id).join(', ')})
+      AND creation_date > ? AND creation_date < ?
+      AND is_archived = 0
+     group by o.id`
+    let existingOrder = null
+        /*
+                            let existingOrder = await app.dbExecute(
+                                searchOneOrderQuery, [
+                                    getMoment()
+                                    .subtract(7, 'days')
+                                    .startOf('day')
+                                    ._d.getTime(),
+                                    getMoment()
+                                    .endOf('day')
+                                    ._d.getTime()
+                                ], {
+                                    dbName,
+                                    single: true
+                                }
+                            ) */
+    if (existingOrder) {
+        order_id = existingOrder.id
+        if (order.observation) {
+            await app.saveDocument({
+                id: order_id,
+                observation: order.observation,
+                _table: 'orders',
+                _fields: ['observation'],
+                _options: {
+                    dbName
+                }
+            })
         }
-    )
-    console.log('RESULT', result)
-    let order_id = result.insertId
+    } else {
+        // remove existing orders from today
+        await app.dbExecute(
+            `DELETE FROM orders WHERE client_id = ? AND creation_date > ? AND creation_date < ?`, [
+                order.client_id,
+                getMoment()
+                .startOf('day')
+                ._d.getTime(),
+                getMoment()
+                .endOf('day')
+                ._d.getTime()
+            ], {
+                dbName
+            }
+        )
+        let result = await app.dbExecute(
+            `INSERT INTO orders (client_id, observation, creation_date)VALUES(?,?,?)`, [order.client_id, order.observation || '', now], {
+                dbName: dbName
+            }
+        )
+        order_id = result.insertId
+    }
 
     // ITEMS
     await app.dbExecute(
@@ -101,6 +196,7 @@ function getNow () {
     ._d.getTime()
 }
 
+/*
 async function removeAutomaticBookingItems (order) {
   await app.dbExecute(
     `DELETE from basket_bookings WHERE client_id = ? AND basket_id NOT IN (${order.items
@@ -117,7 +213,7 @@ async function saveBookings (order) {
   let now = getNow()
   await app.dbExecute(
     `
-    INSERT INTO 
+    INSERT INTO
     basket_bookings(client_id,basket_id,is_canceled,date)
     VALUES
     ${order.items.map(basket => {
@@ -125,7 +221,7 @@ async function saveBookings (order) {
   }).join(`,
     `)}
     ON DUPLICATE KEY UPDATE
-    client_id = VALUES(client_id), 
+    client_id = VALUES(client_id),
     basket_id = VALUES(basket_id),
     is_canceled = 0
     `,
@@ -134,4 +230,4 @@ async function saveBookings (order) {
       dbName: dbName
     }
   )
-}
+} */

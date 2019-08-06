@@ -21,8 +21,11 @@ Vue.component('booking-form', {
         <bf-baskets-view :baskets="baskets" @select="select"></bf-baskets-view >
         <div class="bf_title">Votre commande</div>
         <bf-order-resume v-model="order" @remove="remove" ></bf-order-resume>
-        <div class="bf_total">Total <span v-html="getTotal()"></span></div>
-        <input class="emailInput" placeholder="votre email" v-model="order.email"/>
+        <div class="bf_total">Total <span v-html="getTotal()"></span> €</div>
+        <input class="formInput" placeholder="votre nom complet" v-model="order.fullname"/>
+        <input class="formInput" placeholder="votre email*" v-model="order.email"/>
+        <textarea class="formInput" placeholder="observations (facultatif)" v-model="order.observation">
+        </textarea>
         <button class="validateButton" @click="validate">Valider</button>
     </div>
     <p class="quote_by">Ce système de réservation a été développé par <a target="_blank" href="https://savoie.misitioba.com/">Savoie Tech Coop</a></p>
@@ -50,11 +53,19 @@ margin-top: 15px;
 background-color: #b5a075;
 padding: 20px;
             }
-            .emailInput{
+            .formInput{
                 margin-top:15px;
                 border: 1px solid #b5a075;
 padding: 5px;
 font-size: 14px;
+display: block;
+            }
+            textarea.formInput{
+                min-height:150px;
+                width: 100%;
+    width: -moz-available;          /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+    width: fill-available;
             }
             .validateButton:hover{
                 color: white;
@@ -95,7 +106,9 @@ color: gray;
             }, 0)
         },
         async validate() {
+            if (!this.order.fullname) return alert('Nom complet requis')
             if (!this.order.email) return alert('Email requis')
+
             try {
                 let r = await api.funql({
                     name: 'saveCustomerOrder',
@@ -108,20 +121,17 @@ color: gray;
                     ]
                 })
                 r = r.data ? r.data : r
-                if (r.err) throw new Error(r.err)
                 alert('Merci, la réservation est confirmée!')
             } catch (err) {
-                err = err.message || err
-                if (err === 'NOT_AVAILABLE') {
+                if (err.code === 'NOT_AVAILABLE') {
                     return alert(
+                        err.message ||
                         `Le type de panier sélectionné pour la date sélectionnée est déjà réservé en totalité`
                     )
-                } else {
-                    console.warn(err)
-                    alert(
-                        `En ce moment n'est pas possible de confirmer la réservation, s'il vous plaît essayez plus tard ou contactez-nous par email`
-                    )
                 }
+                alert(
+                    `En ce moment n'est pas possible de confirmer la réservation, s'il vous plaît essayez plus tard ou contactez-nous par email`
+                )
             }
         },
         remove(item) {
