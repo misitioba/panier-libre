@@ -9,7 +9,7 @@ export default {
         clearInterval(this._authMixinInterval)
     },
     created() {
-        if (window.user && window.user.id != this.user.id) {
+        if (this.user && window.user && window.user.id != this.user.id) {
             this.user.id = window.user.id
         }
         this._authMixinInterval = setInterval(() => {
