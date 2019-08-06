@@ -12,7 +12,7 @@ export default {
                 <button class="btn" @click="refresh">Refresh</button>
             </div>
             
-            <table-component :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
+            <table-component :exportCSV="exportCSV" :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
         </div>
         </div>
     `,
@@ -132,7 +132,21 @@ export default {
                     }
                 })
             },
-            items: []
+            items: [],
+            exportCSV(data, table) {
+                let date = require('moment-timezone')()
+                    .tz('Europe/Paris')
+                    .format('DD-MM-YYYY-[a]-HH-mm')
+
+                data = data.map(single => {
+                    single.observation = single._data.observation
+                    return single
+                })
+                return {
+                    data,
+                    filename: `basket-hot-commandes-${date}`
+                }
+            }
         }
     },
     computed: {

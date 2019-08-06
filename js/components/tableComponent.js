@@ -1,3 +1,6 @@
+import html2canvas from 'html2canvas'
+import exportCSV from '../utils/exportCSV'
+
 const scopeCss = require('scope-css')
 var uniqid = require('uniqid')
 
@@ -11,6 +14,7 @@ window.COL_TRANSFORM = {
 
 Vue.component('table-component', {
     props: [
+        'exportCSV',
         'items',
         'colsTransforms',
         'valueTransforms',
@@ -23,6 +27,10 @@ Vue.component('table-component', {
         <div class="table_component" ref="root">
             <div class="" v-if="!!filters">
                 <button class="btn btn-small" @click="filtersState.show=true" v-show="!filtersState.show"><i class="fas fa-filter"></i> Montrer</button>
+                
+                <button class="btn btn-small" v-if="false" @click="exportJPG"><i class="fas fa-file-image"></i> Export JPG</button>
+                <button class="btn btn-small" v-show="!!exportCSV" @click="exportCSVMethod"><i class="fas fa-file-csv"></i> Export CSV</button>
+
                 <button class="btn btn-small" @click="filtersState.show=false" v-show="filtersState.show"><i class="fas fa-filter"></i> Cacher</button>
                 <div v-show="filtersState.show">
                     <div class="filterRow" v-for="(col, index) in getCols" :key="col" v-show="!!filters[col]">
@@ -39,7 +47,7 @@ Vue.component('table-component', {
                     </div>
                 </div>
             </div>
-            <div class="table">
+            <div class="table" ref="table">
                 <div class="row header">
                     <div class="col" v-for="(col, index) in getCols" :key="col" @click="toggleSort(col)">
                         <span v-html="transformColumn(col)"></span>
@@ -88,6 +96,7 @@ font-size: 12px;
             .filterRow select{
                 margin-right: 5px;
                 width: auto !important;
+                background-color: #b5a075;
             }
             .filterRow label{
                 display: flex;
@@ -166,6 +175,42 @@ font-weight: bold;
         }
     },
     methods: {
+        exportCSVMethod() {
+            let data = this.filteredItems()
+            data = data.map(item => {
+                let rta = {}
+                rta.id = item.id
+                this.getCols.forEach(col => {
+                    if (this.isComponent(this.transformValue(item, col))) {
+                        rta[col] = item[col]
+                    } else {
+                        rta[col] = this.transformValue(item, col)
+                    }
+                })
+                rta._data = Object.assign({},item)
+                return rta
+            })
+            let result = this.exportCSV(data, this)
+            exportCSV(result.data, result.filename, result.headers)
+        },
+        exportJPG() {
+            html2canvas(this.$refs.table).then(function(canvas) {
+                var uri = canvas.toDataURL('image/jpg')
+                let date = require('moment-timezone')()
+                    .tz('Europe/Paris')
+                    .format('DD-MM-YYYY-[a]-HH-mm')
+                downloadURI(uri, `basket-hot-commandes-${date}`)
+            })
+
+            function downloadURI(uri, name) {
+                var link = document.createElement('a')
+                link.download = name
+                link.href = uri
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+            }
+        },
         onRowClick(item) {
             this.$emit('clickRow', item.id, item)
             this.$emit('rowClick', item.id, item)
@@ -186,10 +231,10 @@ font-weight: bold;
                 }
 
                 /*
-                                                                                        && !!this.filtersValue[key] && value.toString().length === 10 &&
-                                                                                            value.toString().split('/').length === 3 &&
-                                                                                            parseInt(this.filtersValue[key]).toString().length > 10
-                                                                                            */
+                                                                                                                        && !!this.filtersValue[key] && value.toString().length === 10 &&
+                                                                                                                            value.toString().split('/').length === 3 &&
+                                                                                                                            parseInt(this.filtersValue[key]).toString().length > 10
+                                                                                                                            */
 
                 items = items.filter(i => {
                     let value = this.transformValue(i, key)
