@@ -97,8 +97,16 @@ Vue.component('client-details', {
     template: `
         <div class="client_details" ref="root">
             <div class="form_group">
+                <label>Nom complet</label>
+                <input type="text" v-model="form.fullname" />
+            </div>
+            <div class="form_group">
                 <label>Email</label>
                 <input type="text" v-model="form.email" />
+            </div>
+            <div class="form_group">
+                <label>Téléphone</label>
+                <input type="text" v-model="form.phone" />
             </div>
             <div class="form_bottom_btn_group">
                 <button class="btn" @click="save">Enregistrer</button>
