@@ -40,10 +40,6 @@ Vue.component('basket-details', {
                 <label>Prix</label>
                 <input type="text" v-model="form.price" />
             </div>
-            <div class="form_group" v-show="form.id">
-                <label>Paniers disponibles pour réservation</label>
-                <input type="text" :value="availableBaskets" readonly />
-            </div>
             <div class="form_group" v-show="!form.id">
                 <label>Les abonnés</label>
                 <toggle-component ref="toggleSubscribers" @toggle="()=>form.bulkSubscribers=!form.bulkSubscribers"></toggle-component>
@@ -139,12 +135,6 @@ padding: 5px 20px;
         }
     },
     computed: {
-        availableBaskets() {
-            return (
-                this.form.quantity -
-                this.form.bookings.filter(b => b.is_canceled === 0).length
-            )
-        },
         title() {
             if (this.params.title) return this.params.title
             return this.defaults.title
