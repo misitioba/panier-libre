@@ -7,7 +7,7 @@ export default {
     template: `
     <div ref="scope">
         <div class="dashboard" ref="root" tabindex="0" @keyup.esc="$router.push('/')">
-            <h2>Les réservations</h2>
+            <h2>Tableau de bord</h2>
             <div class="btn_group">
                 <button class="btn" @click="refresh">Refresh</button>
             </div>

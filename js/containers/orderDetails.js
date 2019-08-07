@@ -25,6 +25,11 @@ export default {
                 <label>Date</label>
                 <input readonly readonly type="text" :value="formattedDate" />
             </div>
+            <div class="form_group">
+                <label>Observation</label>
+                <textarea readonly type="text" v-model="form.observation" >
+                </textarea>
+            </div>
             <div class="btn_group">
                 <button class="btn" @click="save">Enregistrer</button>
                 <!--

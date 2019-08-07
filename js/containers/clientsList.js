@@ -3,6 +3,7 @@ export default {
     props: [],
     template: `
         <div class="clients_list" ref="root" tabindex="0" @keyup.esc="$router.push('/')">
+            <h2>Les clients</h2>
             <div class="btn_group">
                 <button class="btn" @click="refresh">Refresh</button>
                 <button class="btn" @click="addClient">Ajouter</button>

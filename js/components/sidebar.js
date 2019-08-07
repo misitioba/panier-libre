@@ -11,38 +11,27 @@ Vue.component('sidebar', {
             <img class="logo" :src="logo"/>
             <ul v-show="collapsed && isLogged">
                 <li>
-                    <button class="btn" @click="$router.push('/')">Tableau de bord</button>
+                    <button class="btn" @click="$router.push({name:'dashboard'})">Tableau de bord</button>
                 </li>
                 <li>
-                    <button class="btn" @click="$router.push('/paniers')">Paniers</button>
+                    <button class="btn" @click="$router.push({name:'baskets'})">Paniers</button>
                 </li>
                 <li>
-                <button class="btn" @click="$router.push('/orders')">Commandes</button>
+                <button class="btn" @click="$router.push({name:'orders'})">Commandes</button>
             </li>
-                <li v-if="false">
-                    <button class="btn" @click="$router.push('/programation')">Programmation</button>
-                </li>
                 
                 <li>
-                    <button class="btn" @click="$router.push('clients-list')">Nos clients</button>
+                    <button class="btn" @click="$router.push({name:'clients'})">Les clients</button>
                 </li>
-                <!--
+               
                 <li>
-                    <button class="btn" @click="$router.push('basket-models')">Modèles de panier</button>
-                <li>
-                <li>
-                    <button class="btn" @click="$router.push('book-basket')">Réservation manuelle</button>
+                    <button class="btn" @click="$router.push({name:'integration'})">Intégration Web</button>
                 </li>
-                -->
                 <li>
-                    <a class="btn" href="${window.cwd(
+                <a class="btn" href="${window.cwd(
     'reserver'
   )}" target="_blank">Reserver</a>
-                </li>
-                <li>
-                    <button class="btn" @click="$router.push('form-integration')">Intégration Web</button>
-                </li>
-
+            </li>
                 
                 
             </ul>

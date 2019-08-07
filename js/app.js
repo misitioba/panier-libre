@@ -2,7 +2,7 @@ import ImportCDNJS from 'import-cdn-js'
 
 import './components/basketDetails'
 import './components/backComponent'
-import './components/basketListComponent'
+import './components/baskets'
 import './components/buttonCmp'
 import './components/modalWindow'
 import './components/navComponent'
@@ -15,7 +15,7 @@ import './components/datePiker'
 import './components/inputCmp'
 import './components/appFooter'
 
-import Home from './containers/homeComponent'
+import Home from './containers/home'
 import Dashboard from './containers/dashboard'
 import Baskets from './containers/bookBasket'
 import Clients from './containers/clientsList'
@@ -31,23 +31,15 @@ window.ERROR = {
     API: 'Erreur de serveur ou de connexion'
 }
 const routes = [
-    { path: '/', component: Dashboard },
-    { path: '/paniers', component: Home },
-    { path: '/book-basket', component: Baskets },
-    { path: '/orders', component: Orders },
+    { path: '/', component: Dashboard, name: 'dashboard' },
+    { path: '/baskets', component: Home, name: 'baskets' },
+    { path: '/orders', component: Orders, name: 'orders' },
     { path: '/orders/:id', component: OrdersDetails, name: 'order-details' },
-    { path: '/clients-list', component: Clients },
+    { path: '/clients-list', component: Clients, name: 'clients' },
     {
         path: '/form-integration',
-        component: Integration
-    },
-    {
-        path: '/basket-models',
-        component: BasketModels
-    }, ,
-    {
-        path: '/programation',
-        component: Programation
+        component: Integration,
+        name: 'integration'
     }
 ]
 const router = new VueRouter({

@@ -6,6 +6,7 @@ Vue.component('basket-list', {
     mixins: [stylesMixin],
     template: styleMixinTmpl(`
         <div class="basket_list" ref="root">
+            <h2>Paniers</h2>
             <div class="btn_group">
                 <button class="btn" @click="refresh">Refresh</button>
                 <button class="btn" @click="addBasket">Ajouter panier</button>
