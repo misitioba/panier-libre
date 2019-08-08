@@ -7,15 +7,22 @@ module.exports = _app => {
 
 async function saveCustomerOrder(order) {
     dbName = this.dbName
+    if (order.umid) {
+        dbName = await app.getDbnameFromUserModuleId(order.umid)
+    }
+
     var client = null
     if (order.email) {
-        client = await app.getClientByEmail(order.email)
+        client = await app.getClientByEmail(order.email, {
+            _dbName: dbName
+        })
     }
     if (order.fullname) {
         client.fullname = order.fullname
         await app.api.saveClient(
             Object.assign({}, client, {
-                _fields: ['fullname']
+                _fields: ['fullname'],
+                _dbName: dbName
             })
         )
     }
@@ -40,12 +47,7 @@ async function saveCustomerOrder(order) {
 
     for (var index in itemsWithAvailable) {
         let item = itemsWithAvailable[index]
-        console.log('TRACE', {
-            title: item.basket.title,
-            available: item.available,
-            total: item.basket.quantity,
-            quantity: item.quantity
-        })
+
         if (item.quantity > item.available) {
             let message = ''
 
@@ -116,20 +118,20 @@ async function saveOrder(order) {
      group by o.id`
     let existingOrder = null
         /*
-                            let existingOrder = await app.dbExecute(
-                                searchOneOrderQuery, [
-                                    getMoment()
-                                    .subtract(7, 'days')
-                                    .startOf('day')
-                                    ._d.getTime(),
-                                    getMoment()
-                                    .endOf('day')
-                                    ._d.getTime()
-                                ], {
-                                    dbName,
-                                    single: true
-                                }
-                            ) */
+                                                                                              let existingOrder = await app.dbExecute(
+                                                                                                  searchOneOrderQuery, [
+                                                                                                      getMoment()
+                                                                                                      .subtract(7, 'days')
+                                                                                                      .startOf('day')
+                                                                                                      ._d.getTime(),
+                                                                                                      getMoment()
+                                                                                                      .endOf('day')
+                                                                                                      ._d.getTime()
+                                                                                                  ], {
+                                                                                                      dbName,
+                                                                                                      single: true
+                                                                                                  }
+                                                                                              ) */
     if (existingOrder) {
         order_id = existingOrder.id
         if (order.observation) {

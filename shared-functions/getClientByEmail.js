@@ -1,9 +1,11 @@
 var moment = require('moment-timezone')
 module.exports = app => {
-    return async function getClientByEmail(email) {
+    return async function getClientByEmail(email, options = {}) {
+        let dbName = options._dbName || this.dbName
+
         let client = await app.dbExecute(
             'SELECT * FROM clients WHERE email = ?', [email], {
-                dbName: this.dbName,
+                dbName,
                 single: true
             }
         )
@@ -15,12 +17,12 @@ module.exports = app => {
                     .tz('Europe/Paris')
                     ._d.getTime()
                 ], {
-                    dbName: this.dbName
+                    dbName
                 }
             )
             client = await app.dbExecute(
                 'SELECT * FROM clients WHERE email = ?', [email], {
-                    dbName: this.dbName,
+                    dbName,
                     single: true
                 }
             )
