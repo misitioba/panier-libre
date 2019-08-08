@@ -49,10 +49,10 @@ const router = new VueRouter({
 
 // window.router = router
 window.onLogout = () => {
-    router.push('logout')
+    router.push({name:'logout'})
 }
 window.onLogin = () => {
-    router.push('dashboard')
+    router.push({name:'dashboard'})
 }
 
 new Vue({
