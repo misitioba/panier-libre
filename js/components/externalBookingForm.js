@@ -113,11 +113,15 @@ color: gray;
                 let r = await api.funql({
                     name: 'saveCustomerOrder',
                     args: [
-                        Object.assign({}, this.order, {
-                            items: this.order.items.map(item => {
-                                return Object.assign({}, item)
-                            })
-                        })
+                        Object.assign({
+                                umid: window._um_id
+                            },
+                            this.order, {
+                                items: this.order.items.map(item => {
+                                    return Object.assign({}, item)
+                                })
+                            }
+                        )
                     ]
                 })
                 r = r.data ? r.data : r
@@ -152,6 +156,9 @@ color: gray;
         async fetchBaskets() {
             let result = await api.funql({
                 name: 'getBaskets',
+                args: [{
+                    umid: window._um_id
+                }],
                 transform: function(result) {
                     return result.filter(r => {
                         if (r.is_archived) return false

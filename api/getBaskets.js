@@ -1,5 +1,10 @@
 module.exports = app => {
-    return async function getBaskets() {
+    return async function getBaskets(params) {
+        let dbName = this.dbName
+        if (params.umid) {
+            dbName = await app.getDbnameFromUserModuleId(params.umid)
+        }
+
         let query = `
         SELECT 
 b.*,
@@ -10,7 +15,7 @@ LEFT JOIN order_items as oi on oi.basket_id = b.id
 GROUP BY b.id
         `
         return await app.dbExecute(query, [], {
-            dbName: this.dbName
+            dbName
         })
     }
 }

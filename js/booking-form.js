@@ -13,6 +13,9 @@ function withVue() {
         }
         return setTimeout(withVue, 1000)
     }
+
+    window._um_id = __USER_MODULE__ID__
+
     return __CALLBACK__({
         mount(el) {
             init(el)
@@ -37,7 +40,7 @@ function withVue() {
                     count: 0
                 }
             },
-            mounted() { },
+            mounted() {},
             created() {
                 window.api.funqlEndpointURL = endpointURL
                 console.log(endpointURL)

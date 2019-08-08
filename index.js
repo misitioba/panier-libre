@@ -17,6 +17,8 @@ module.exports = async(app, config) => {
                 if (process.env.NODE_ENV === 'production') {
                     fullUrl = process.env.DOMAIN || fullUrl
                 }
+
+                html = html.split('__USER_MODULE__ID__').join(req.query.umid)
                 html = html.split('__CALLBACK__').join(req.query.callback)
                 html = html.split('__API_ENDPOINT_URL__').join(fullUrl + '/')
                 return html
@@ -37,7 +39,9 @@ module.exports = async(app, config) => {
                 (function(){
                     var URI = '${fullUrl}';
                     let s = document.createElement('script')
-                    s.src = URI+'/basket-hot/booking_form_client.js?callback=initstcbh'
+                    s.src = URI+'/basket-hot/booking_form_client.js?callback=initstcbh&umid=${
+  req.query.umid
+}'
                     document.querySelector('body').append(s)
                     window.initstcbh = function (app){
                         app.mount('.app_goes_here')
@@ -67,13 +71,14 @@ module.exports = async(app, config) => {
         path: config.getPath('api'),
         scope: ({ req }) => {
             let dbName = config.db_name
-            if (req.user && req.user.modules && req.user.modules.length > 0) {
+            if (req && req.user && req.user.modules && req.user.modules.length > 0) {
                 let moduleMatch = req.user.modules.find(um => um.module_id == config.id)
                 if (moduleMatch) {
                     dbName = moduleMatch.dbname || dbName
                 }
             }
             return {
+                moduleId: config.id,
                 dbName
             }
         }

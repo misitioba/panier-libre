@@ -28,9 +28,9 @@ Vue.component('sidebar', {
                     <button class="btn" @click="$router.push({name:'integration'})">Intégration Web</button>
                 </li>
                 <li>
-                <a class="btn" href="${window.cwd(
+                <a class="btn" :href="'${window.cwd(
     'reserver'
-  )}" target="_blank">Reserver</a>
+  )}'+'?umid='+userModuleId" target="_blank">Reserver</a>
             </li>
                 
                 
@@ -106,7 +106,8 @@ width: 100%;
                     display:block;
                 }
             `,
-            collapsed: true
+            collapsed: true,
+            userModuleId: ''
         }
     },
     computed: {
@@ -115,5 +116,7 @@ width: 100%;
         }
     },
     created() {},
-    mounted() {}
+    async mounted() {
+        this.userModuleId = await api.funql({ name: 'getUserModuleId' })
+    }
 })
