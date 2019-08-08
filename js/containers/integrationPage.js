@@ -7,15 +7,7 @@ export default {
             <div class="editor" ref="editor">
             
             
-                (function(){
-                    var URI = '${window.publicPath}';
-                    let s = document.createElement('script')
-                    s.src = URI+'/basket-hot/booking_form_client.js?callback=initstcbh'
-                    document.querySelector('body').append(s)
-                    window.initstcbh = function (app){
-                        app.mount('CSS_SELECTOR')
-                    }
-                })();
+                
             
 
             </div>
@@ -42,7 +34,7 @@ export default {
     },
     computed: {},
     methods: {},
-    mounted() {
+    async mounted() {
         let styles = document.createElement('style')
         styles.setAttribute('scoped', '')
         styles.innerHTML = this.styles
@@ -52,5 +44,19 @@ export default {
         editor.setTheme('ace/theme/clouds')
         editor.getSession().setMode('ace/mode/javascript')
         editor.setShowFoldWidgets(false)
+
+        let userModuleId = await api.funql({ name: 'getUserModuleId' })
+
+        editor.setValue(
+            `(function(){
+            var URI = '${window.publicPath}';
+            let s = document.createElement('script')
+            s.src = URI+'/basket-hot/booking_form_client.js?callback=initstcbh&umid=${userModuleId}'
+            document.querySelector('body').append(s)
+            window.initstcbh = function (app){
+                app.mount('CSS_SELECTOR')
+            }
+        })();`, -1
+        )
     }
 }
