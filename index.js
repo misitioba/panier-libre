@@ -1,4 +1,4 @@
-module.exports = async(app, config) => {
+module.exports = async (app, config) => {
     app.get(
         config.getRouteName('app.js'),
         app.webpackMiddleware({
@@ -26,8 +26,11 @@ module.exports = async(app, config) => {
         })
     )
 
-    app.get(config.getRouteName('reserver'), async(req, res) => {
+    app.get(config.getRouteName('reserver'), async (req, res) => {
         var fullUrl = req.protocol + '://' + req.get('host')
+        if (process.env.NODE_ENV === 'production') {
+            fullUrl = process.env.DOMAIN || fullUrl
+        }
         res.send(`
                 <!-- CLIENT WEBPAGE -->
                 <head>
@@ -40,8 +43,8 @@ module.exports = async(app, config) => {
                     var URI = '${fullUrl}';
                     let s = document.createElement('script')
                     s.src = URI+'/basket-hot/booking_form_client.js?callback=initstcbh&umid=${
-  req.query.umid
-}'
+            req.query.umid
+            }'
                     document.querySelector('body').append(s)
                     window.initstcbh = function (app){
                         app.mount('.app_goes_here')

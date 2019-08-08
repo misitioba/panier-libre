@@ -1,5 +1,5 @@
 module.exports = app => {
-    return async function getBaskets(params) {
+    return async function getBaskets(params = {}) {
         let dbName = this.dbName
         if (params.umid) {
             dbName = await app.getDbnameFromUserModuleId(params.umid)
