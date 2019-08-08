@@ -61,10 +61,21 @@ module.exports = async(app, config) => {
 
     app.use('/basket-hot/static', express.static(config.getPath('static')))
 
+    // console.log('TRACE BASKET', config)
+
     app.loadApiFunctions({
         path: config.getPath('api'),
-        scope: {
-            dbName: config.db_name
+        scope: ({ req }) => {
+            let dbName = config.db_name
+            if (req.user && req.user.modules && req.user.modules.length > 0) {
+                let moduleMatch = req.user.modules.find(um => um.module_id == config.id)
+                if (moduleMatch) {
+                    dbName = moduleMatch.dbname || dbName
+                }
+            }
+            return {
+                dbName
+            }
         }
     })
 

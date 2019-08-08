@@ -24,7 +24,7 @@ import BasketModels from './containers/basketModels'
 import Programation from './containers/programation'
 import Orders from './containers/orders'
 import OrdersDetails from './containers/orderDetails'
-
+import Empty from './containers/empty'
 ImportCDNJS('/analytics.js')
 
 window.ERROR = {
@@ -32,6 +32,7 @@ window.ERROR = {
 }
 const routes = [
     { path: '/', component: Dashboard, name: 'dashboard' },
+    { path: '/logout', component: Empty, name: 'logout' },
     { path: '/baskets', component: Home, name: 'baskets' },
     { path: '/orders', component: Orders, name: 'orders' },
     { path: '/orders/:id', component: OrdersDetails, name: 'order-details' },
@@ -45,6 +46,14 @@ const routes = [
 const router = new VueRouter({
     routes
 })
+
+// window.router = router
+window.onLogout = () => {
+    router.push('logout')
+}
+window.onLogin = () => {
+    router.push('dashboard')
+}
 
 new Vue({
     name: 'app',

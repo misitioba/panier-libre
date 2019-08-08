@@ -28,6 +28,10 @@ select {
     margin-bottom: 30px;
 }
 
+.btn_group button {
+    margin-bottom: 5px;
+}
+
 .form_bottom_btn_group {
     margin-top: 30px;
 }
