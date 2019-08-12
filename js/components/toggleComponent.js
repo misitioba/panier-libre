@@ -1,11 +1,12 @@
 Vue.component('toggle-component', {
+    props: ['value'],
     template: `
         <div class="toggle_component" ref="root" @click="toggle">
-            <div :class="!this.value?'left active':'left'">
-                <span v-show="!value">N</span>
+            <div :class="!this.scopeValue?'left active':'left'">
+                <span v-show="!scopeValue">N</span>
             </div>
-            <div :class="this.value?'right active':'right'">
-                <span v-show="value">O</span>
+            <div :class="this.scopeValue?'right active':'right'">
+                <span v-show="scopeValue">O</span>
             </div>
         </div>
     `,
@@ -53,15 +54,15 @@ align-items: center;
                 
             }
         `,
-            value: false
+            scopeValue: this.scopeValue !== undefined ? this.value : false
         }
     },
     computed: {},
     methods: {
         toggle() {
-            this.value = !this.value
-            this.$emit('toggle', this.value)
-            this.$emit('input', this.value)
+            this.scopeValue = !this.scopeValue
+            this.$emit('toggle', this.scopeValue)
+            this.$emit('input', this.scopeValue)
         }
     },
     mounted() {
@@ -71,7 +72,7 @@ align-items: center;
         this.$refs.root.appendChild(styles)
 
         this.$on('set', v => {
-            this.value = v
+            this.scopeValue = v
         })
 
         this.$emit('mounted', this)

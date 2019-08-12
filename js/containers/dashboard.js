@@ -32,6 +32,7 @@ export default {
                 email: ['include', 'gt', 'gte', 'lt', 'lte', 'equal'],
                 quantity: ['include', 'gt', 'gte', 'lt', 'lte', 'equal'],
                 delivery_date: ['gt', 'gte', 'lt', 'lte', 'equal']
+                    // is_archived: ['boolean']
             },
             gridColumns: '1fr 1fr 1fr 1fr 1fr 1fr',
             colsTransforms: {
@@ -169,6 +170,7 @@ export default {
                 name: 'getDashboardData',
                 transform: function(items) {
                     return items
+                        // return items.filter(i => i.is_archived === 0)
                 }
             })
         }

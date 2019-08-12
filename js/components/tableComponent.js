@@ -26,21 +26,26 @@ Vue.component('table-component', {
         <div ref="scope">
         <div class="table_component" ref="root">
             <div class="" v-if="!!filters">
-                <button class="btn btn-small" @click="filtersState.show=true" v-show="!filtersState.show"><i class="fas fa-filter"></i> Montrer</button>
                 
+            <button class="btn btn-small" @click="filtersState.show=true" v-show="!filtersState.show"><i class="fas fa-filter"></i> Montrer</button>
+            <button class="btn btn-small" @click="filtersState.show=false" v-show="filtersState.show"><i class="fas fa-filter"></i> Cacher</button>
+            
                 <button class="btn btn-small" v-if="false" @click="exportJPG"><i class="fas fa-file-image"></i> Export JPG</button>
                 <button class="btn btn-small" v-show="!!exportCSV" @click="exportCSVMethod"><i class="fas fa-file-csv"></i> Export CSV</button>
 
-                <button class="btn btn-small" @click="filtersState.show=false" v-show="filtersState.show"><i class="fas fa-filter"></i> Cacher</button>
+                
                 <div v-show="filtersState.show">
-                    <div class="filterRow" v-for="(col, index) in getCols" :key="col" v-show="!!filters[col]">
+                    <div class="filterRow" v-for="(col, index) in getFilterCols" :key="col" v-show="!!filters[col]">
                         <label v-html="transformColumn(col)"></label>
                         <select v-model="filtersState[col]" @change="filterChange">
-                            <option v-for="type in filters[col]" :value="type" v-html="type">
+                            <option v-for="type in getFilterTypes(col)" :value="type" v-html="type">
                             </option>
                         </select>
                         
-                        <input  v-model="filtersValue[col]"  @keyup="filterChange" v-if="col.indexOf('date')===-1"/>
+                        <input  v-model="filtersValue[col]"  @keyup="filterChange" v-if="col.indexOf('date')===-1 && filtersState[col]!=='boolean'"/>
+
+                        <toggle-component v-show="filtersState[col]=='boolean'"
+                        v-model="filtersValue[col]"></toggle-component>
                         
                         <date-picker v-model="filtersValue[col]" v-if="col.indexOf('date')!==-1" @keyup="filterChange"></date-picker>
                         
@@ -147,6 +152,16 @@ font-weight: bold;
         }
     },
     computed: {
+        getFilterCols(){
+            if(this.items.length===0) return this.getCols
+            else {
+                let cols = Object.keys(this.items[0])
+                let newCols = Object.keys(this.filters).filter(c=>{
+                    return !cols.find(cc=>cc==c)
+                })
+                return cols.concat(newCols)
+            }
+        },
         getCols() {
             return (
                 this.cols || (this.items.length > 0 && Object.keys(this.items[0])) || []
@@ -218,7 +233,13 @@ font-weight: bold;
         filteredItems() {
             var items = this.sortedItems
             if (!this.filters) return items
+            
             Object.keys(this.filters).forEach(key => {
+                
+                if (this.filtersState[key] === 'boolean'){
+                    items = items.filter(i=>i[key] == this.filtersValue[key])
+                }
+                
                 if (this.filtersState[key] === 'include' && !!this.filtersValue[key]) {
                     items = items.filter(i => {
                         let value = this.transformValue(i, key)
@@ -229,12 +250,6 @@ font-weight: bold;
                         }
                     })
                 }
-
-                /*
-                                                                                                                        && !!this.filtersValue[key] && value.toString().length === 10 &&
-                                                                                                                            value.toString().split('/').length === 3 &&
-                                                                                                                            parseInt(this.filtersValue[key]).toString().length > 10
-                                                                                                                            */
 
                 items = items.filter(i => {
                     let value = this.transformValue(i, key)
@@ -256,6 +271,8 @@ font-weight: bold;
 
                     return true
                 })
+
+
             })
             return items
         },
@@ -293,6 +310,14 @@ font-weight: bold;
             return (
                 typeof colValue === 'object' && typeof colValue.component === 'string'
             )
+        },
+        getFilterTypes(filterKey){
+            if(!this.filters[filterKey]) return false
+            if(this.filters[filterKey] instanceof Array){
+                return this.filters[filterKey]
+            }else{
+                return this.filters[filterKey].types || ['equal','include']
+            }
         },
         getComponentName(colValue) {
             if (!colValue) return ''
