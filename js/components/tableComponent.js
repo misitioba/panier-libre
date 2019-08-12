@@ -35,7 +35,7 @@ Vue.component('table-component', {
                 <div v-show="filtersState.show">
                     <div class="filterRow" v-for="(col, index) in getCols" :key="col" v-show="!!filters[col]">
                         <label v-html="transformColumn(col)"></label>
-                        <select v-model="filtersState[col]">
+                        <select v-model="filtersState[col]" @change="filterChange">
                             <option v-for="type in filters[col]" :value="type" v-html="type">
                             </option>
                         </select>
