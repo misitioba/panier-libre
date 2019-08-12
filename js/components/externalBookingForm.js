@@ -16,19 +16,32 @@ Vue.component('booking-form', {
     <div v-show="baskets.length===0 && !fetched">
         <div class="bf_title">Chargement...</div>
     </div>
-    <div v-show="baskets.length>0">
-        <div class="bf_title">Paniers disponibles</div>
-        <bf-baskets-view :baskets="baskets" @select="select"></bf-baskets-view >
-        <div class="bf_title">Votre commande</div>
-        <bf-order-resume v-model="order" @remove="remove" ></bf-order-resume>
-        <div class="bf_total">Total <span v-html="getTotal()"></span> €</div>
-        <input class="formInput" placeholder="votre nom complet" v-model="order.fullname"/>
-        <input class="formInput" placeholder="votre email*" v-model="order.email"/>
-        <textarea class="formInput" placeholder="observations (facultatif)" v-model="order.observation">
-        </textarea>
-        <button class="validateButton" @click="validate">Valider</button>
+    <div v-show="baskets.length>0" class="form_root">
+        
+        <div class="section_baskets">
+            <div class="bf_title">Paniers</div>
+            <bf-baskets-view :baskets="baskets" @select="select"></bf-baskets-view >
+        </div>
+
+        <div class="section_baskets_resume">
+            <div class="bf_title">Votre commande</div>
+            <bf-order-resume v-model="order" @remove="remove" ></bf-order-resume>
+            <div class="bf_total">Total <span v-html="getTotal()"></span> €</div>
+        </div>
+        
+        <div class="section_user_details">
+            <div class="bf_title">Vos informations</div>
+            <input class="formInput" placeholder="votre nom complet" v-model="order.fullname"/>
+            <input class="formInput" placeholder="votre email*" v-model="order.email"/>
+            <textarea class="formInput" placeholder="observations (facultatif)" v-model="order.observation">
+            </textarea>
+        </div>
+        
+        <div class="section_validate">
+            <button class="validateButton" @click="validate">Valider</button>
+        </div>
     </div>
-    <p class="quote_by">Ce système de réservation a été développé par <a target="_blank" href="https://savoie.misitioba.com/">Savoie Tech Coop</a></p>
+    <p class="quote_by">Développé par <a target="_blank" href="https://savoie.misitioba.com/">Savoie Tech Coop</a></p>
 </div>    
     `),
     data() {
@@ -43,22 +56,28 @@ Vue.component('booking-form', {
                 box-shadow: 1px 9px 20px #b5a075;
             }
             .bf_title{
-                font-size:25px;
-                color:#374425;
+                font-size: 25px;
+
+color: #1e7521;
+
+font-weight: bold;
             }
             .bf_total{
                 font-size: 24px;
 color: white;
 margin-top: 15px;
-background-color: #b5a075;
-padding: 20px;
+background-color: #0b6a0feb;
+padding: 10px 40px;
+margin: 10px -20px;
+text-align: right;
             }
             .formInput{
-                margin-top:15px;
-                border: 1px solid #b5a075;
+                margin-top: 15px;
+border: 1px solid #b5a075;
 padding: 5px;
-font-size: 14px;
+font-size: 18px;
 display: block;
+border-radius: 5px;
             }
             textarea.formInput{
                 min-height:150px;
@@ -69,24 +88,81 @@ display: block;
             }
             .validateButton:hover{
                 color: white;
-                background-color: #b5a075;
+
+background-color: #d9aa4c;
+            }
+            .quote_by{
+                font-size: 11px;
+
+margin-top: 50px;
+
+font-style: italic;
             }
             .validateButton{
                 color: #b5a075;
-display: block;
-margin-top: 15px;
-background-color: white;
-border: 2px solid #b5a075;
-font-size: 18px;
-font-weight: bold;
-cursor: pointer;
+
+                display: block;
+                
+                margin-top: 15px;
+                
+                background-color: #1e7521;
+                
+                border: 0px;
+                
+                font-size: 15px;
+                
+                font-weight: bold;
+                
+                cursor: pointer;
+                
+                color: white;
+                
+                padding: 15px;
+                
+                text-transform: uppercase;
+                
+                box-shadow: 0px 3px 5px #d9aa4c;
             }
-            .quote_by{
-                margin-top: 50px;
-font-size: 12px;
-font-style: italic;
-color: gray;
+
+            .form_root{
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-areas: 
+                'section_baskets'
+                'section_baskets_resume'
+                'section_user_details'
+                'section_validate';
             }
+        .section_baskets{
+            grid-area: section_baskets;
+        }
+        .section_baskets_resume{
+            grid-area: section_baskets_resume;
+        }
+        .section_user_details{
+            grid-area: section_user_details;
+        }
+        .section_validate{
+            grid-area: section_validate;
+        }
+        @media only screen and (max-width: 639px) {
+                
+        }
+        @media only screen and (max-width: 1047px) {
+            
+        }
+        @media only screen and (min-width: 1248px) {
+            .bf_total{
+                margin:10px 0px;
+            }
+            .form_root{
+                display: grid;
+                grid-template-columns: 70% 30%;
+                grid-template-areas: 
+                'section_baskets section_baskets_resume '
+                'section_user_details section_validate'
+            }
+        }
             `,
             order: {
                 email: '',

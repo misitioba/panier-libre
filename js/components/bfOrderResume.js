@@ -10,7 +10,7 @@ Vue.component('bf-order-resume', {
     template: styleMixinTmpl(`
     <div class="root" ref="root" v-show="true">
         <div v-show="value.items.length===0">
-            <p class="emptyText">Cliquez sur les paniers disponibles pour les ajouter à votre commande</p>
+            <p class="emptyText">Cliquez sur les paniers pour les ajouter à votre commande</p>
         </div>
         <div class="basket" v-for="(item, index) in value.items" :key="item.id" @click="$emit('select',item)">
             <div class="a1 removeButton">
@@ -39,8 +39,8 @@ Vue.component('bf-order-resume', {
     margin-top: 20px;
 }
 .basket{
-    background-color:#b5a075;
-    padding: 10px;
+    background-color:#d9aa4c;
+    padding: 10px 20px;
 
 border-radius: 5px;
 
@@ -48,8 +48,8 @@ margin: 0px 0px;
 margin-bottom: 5px;
 
 display: grid;
-grid-template-columns: 50px 1fr 100px 50px;
-grid-template-areas: 'a1 a2 a4 a3';
+grid-template-columns: 1fr 100px 50px 50px;
+grid-template-areas: 'a2 a4 a3 a1';
 }
 
 .title{
@@ -59,7 +59,7 @@ grid-template-areas: 'a1 a2 a4 a3';
 .description{
     color:white;
     padding-top:10px;
-    font-size: 12px;
+    font-size: 16px;
 }
 
 
@@ -90,11 +90,14 @@ align-items: center;
     text-align:right;
 }
 button{
-    border: 1px solid #b5a075;
+    border: 0px;
+    cursor: pointer;
     background-color: white;
-    cursor:pointer;
-    padding: 2px 15px;
+    height: 30px;
+    width: 30px;
     border-radius: 5px;
+    font-weight: bold;
+    font-size: 16px;
 }
 .emptyText{
     color: gray;
