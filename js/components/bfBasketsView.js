@@ -17,7 +17,10 @@ Vue.component('bf-baskets-view', {
             <div>
                 <span class="date">Sera livré le jour</span>
                 <span class="date" v-html="date(item.delivery_date)"></span>
+                <p v-html="item.price+' €'">
+                </p>
             </div>
+            
         </div>
         </div>
     </div>
@@ -34,6 +37,7 @@ Vue.component('bf-baskets-view', {
     padding: 10px 0px;
 }
 .basket{
+    color:white;
     position:relative;
     background-color:#b5a075;
     padding:20px;
