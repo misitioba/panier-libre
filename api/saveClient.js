@@ -30,7 +30,7 @@ module.exports = app => {
             )
         } else {
             return await app.dbExecute(
-                'INSERT INTO clients (email, creation_date)VALUES(?,?)', [form.email, form.creation_date], {
+                `INSERT INTO clients (email, fullname, phone, creation_date)VALUES(?,?,?,?)`, [form.email, form.fullname, form.phone, form.creation_date], {
                     dbName
                 }
             )
