@@ -1,24 +1,35 @@
 import stylesMixin from '../mixins/styles'
 import createEditableColumn from '../utils/createEditableColumn'
+import orderDetails from './orderDetails'
+
+// import Vue from 'vue'
+Vue.component('orderDetails', orderDetails)
+
 export default {
     mixins: [stylesMixin],
     name: 'dashboard',
     props: [],
     template: `
     <div ref="scope">
-        <div class="dashboard" ref="root" tabindex="0" @keyup.esc="$router.push('/')">
+        <div class="dashboard" ref="root" >
             <h2>Tableau de bord</h2>
             <div class="btn_group">
                 <button class="btn" @click="refresh">Refresh</button>
             </div>
             
-            <table-component :exportCSV="exportCSV" :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
+            <table-component @rowClick="rowClick" :exportCSV="exportCSV" :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
+
+            <modal-window ref="modal" :params="modalParams" v-show="!!modal" v-model="modal" @close="modal=''"></modal-window>
         </div>
         </div>
     `,
     data() {
         var self = this
         return {
+            modal: '',
+            modalParams: {
+                id: ''
+            },
             styles: `
             .dashboard{
             
@@ -175,6 +186,12 @@ export default {
         }
     },
     methods: {
+        rowClick(id, value) {
+            this.modal = 'orderDetails'
+            this.modalParams = {
+                id: value.orderId
+            }
+        },
         async refresh() {
             this.items = await window.api.funql({
                 name: 'getDashboardData',

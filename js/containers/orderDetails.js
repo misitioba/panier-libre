@@ -4,7 +4,7 @@ import {
 } from '../mixins/styles'
 
 export default {
-    props: [],
+    props: ['params'],
     mixins: [stylesMixin],
     template: styleMixinTmpl(`
         <div class="order_details" ref="root">
@@ -30,7 +30,7 @@ export default {
                 <textarea readonly type="text" v-model="form.observation" >
                 </textarea>
             </div>
-            <div class="btn_group">
+            <div class="btn_group" v-if="false">
                 <button class="btn" @click="save">Enregistrer</button>
                 <!--
                 <button class="btn btn-black" @click="()=>archive(true)" v-show="form.id&&form.is_archived===0">Archiver</button>
@@ -73,9 +73,15 @@ export default {
     methods: {
         async save(closeAfter = true) {},
         async fetchDetails() {
+            let id = null
+            if (this.params && this.params.id) {
+                id = this.params.id
+            } else {
+                id = this.$route.params.id
+            }
             this.form = await window.api.funql({
                 name: 'getOrder',
-                args: [this.$route.params.id]
+                args: [id]
             })
         }
     },
