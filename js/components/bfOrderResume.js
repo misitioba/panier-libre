@@ -16,9 +16,9 @@ Vue.component('bf-order-resume', {
             <div class="a1 removeButton">
                 <button class="" @click="$emit('remove',item)">X</button>
             </div>
-            <div class="a2">
-                <div class="title" v-html="item.title"></div>
-                <div class="description" v-html="item.description"></div>
+            <div class="a2 title" v-html="item.title">
+                <div class="title" v-if="false" v-html="item.title"></div>
+                <div class="description" v-if="false" v-html="item.description"></div>
             </div>
             <div class="a4">
                 <input class="q" :value="item.quantity" @change="onQuantitychange($event,item)"/>
@@ -55,6 +55,8 @@ grid-template-areas: 'a2 a4 a3 a1';
 .title{
     font-size:18px;
     color:white;
+    display: flex;
+align-items: center;
 }
 .description{
     color:white;
