@@ -34,8 +34,9 @@ export default {
                 delivery_date: ['gt', 'gte', 'lt', 'lte', 'equal']
                     // is_archived: ['boolean']
             },
-            gridColumns: '1fr 1fr 1fr 1fr 1fr 1fr',
+            gridColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr',
             colsTransforms: {
+                has_obs: () => `OBS ?`,
                 email: () => 'CLIENT',
                 delivery_date: () => 'Date de livraison'.toUpperCase(),
                 booking_date: () => 'Date de réservation'.toUpperCase(),
@@ -48,9 +49,11 @@ export default {
                 'basket_id',
                 'booking_date',
                 'delivery_date',
-                'is_canceled'
+                'is_canceled',
+                'has_obs'
             ],
             valueTransforms: {
+                has_obs: v => (v ? 'Oui' : ''),
                 delivery_date: v => moment(v.delivery_date).format('DD/MM/YYYY'),
                 booking_date: v => moment(v.booking_date).format('DD/MM/YYYY'),
                 quantity: createEditableColumn({
@@ -84,7 +87,8 @@ export default {
                                 return {
                                     value: i.id,
                                     text: `${i.title} (${i.description})`,
-                                    delivery_date: i.delivery_date
+                                    delivery_date: i.delivery_date,
+                                    has_obs: !!i.observation
                                 }
                             })
                         }
