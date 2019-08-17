@@ -44,7 +44,7 @@ export default {
             },
             cols: ['orderId', 'email', 'creation_date'],
             valueTransforms: {
-                creation_date: v => moment(v.delivery_date).format('DD/MM/YYYY'),
+                creation_date: v => moment(v.creation_date).format('DD/MM/YYYY'),
                 booking_date: v => moment(v.booking_date).format('DD/MM/YYYY'),
                 quantity: createEditableColumn({
                     component: 'input-cmp',
@@ -156,7 +156,9 @@ export default {
             this.items = await window.api.funql({
                 name: 'getOrders',
                 transform: function(items) {
-                    return items
+                    return items.sort((a, b) => {
+                        return a.creation_date < b.creation_date ? 1 : -1
+                    })
                 }
             })
         }
