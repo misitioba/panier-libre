@@ -2,7 +2,7 @@ export default {
     name: 'clients-list',
     props: [],
     template: `
-        <div class="clients_list" ref="root" tabindex="0" @keyup.esc="$router.push('/')">
+        <div class="clients_list" ref="root">
             <h2>Les clients</h2>
             <div class="btn_group">
                 <button class="btn" @click="refresh">Refresh</button>
@@ -28,13 +28,14 @@ export default {
                 
             }
         `,
-            gridColumns: '1fr 1fr 1fr',
+            gridColumns: '1fr 1fr 1fr 1fr',
             colsTransforms: {
                 // email: () => 'Date de livraison'.toUpperCase(),
                 creation_date: () => `créé à`.toUpperCase(),
-                is_subscriber: () => `est abonné`.toUpperCase()
+                is_subscriber: () => `est abonné`.toUpperCase(),
+                fullname: () => `Nom complet`.toUpperCase()
             },
-            cols: ['email', 'creation_date', 'is_subscriber'],
+            cols: ['fullname', 'email', 'creation_date', 'is_subscriber'],
             valueTransforms: {
                 creation_date: v => moment(v.creation_date).format('DD/MM/YYYY'),
                 is_subscriber: v => ({
@@ -79,7 +80,9 @@ export default {
             this.items = await window.api.funql({
                 name: 'getClients',
                 transform: function(items) {
-                    return items
+                    return items.sort(function(a, b) {
+                        return a.creation_date > b.creation_date ? -1 : 1
+                    })
                 }
             })
         }

@@ -10,6 +10,7 @@ Vue.component('modal-window', {
         </div>
     `,
     data() {
+        var self = this
         return {
             isDirty: false,
             styles: `
@@ -36,7 +37,12 @@ padding: 15px;
             @media only screen and (max-width: 639px) {
                 
             }
-        `
+        `,
+            onEscape(e) {
+                if (e.which == 27) {
+                    self.close()
+                }
+            }
         }
     },
     computed: {},
@@ -54,12 +60,20 @@ padding: 15px;
             ) {
                 this.$emit('close')
             }
+        },
+        bindEscape() {
+            $(window.document).on('keydown', this.onEscape)
         }
+    },
+    destroyed() {
+        $(window.document).off('keydown', this.onEscape)
     },
     mounted() {
         let styles = document.createElement('style')
         styles.setAttribute('scoped', '')
         styles.innerHTML = this.styles
         this.$refs.root.appendChild(styles)
+
+        this.bindEscape()
     }
 })
