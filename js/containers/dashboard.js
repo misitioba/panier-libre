@@ -34,7 +34,7 @@ export default {
                 delivery_date: ['gt', 'gte', 'lt', 'lte', 'equal']
                     // is_archived: ['boolean']
             },
-            gridColumns: '1fr 1fr 1fr 1fr 1fr 1fr 1fr',
+            gridColumns: 'minmax(200px,1fr) minmax(60px,100px) minmax(300px,1fr) 1fr 1fr 1fr 1fr',
             colsTransforms: {
                 has_obs: () => `OBS ?`,
                 email: () => 'CLIENT',
@@ -83,14 +83,20 @@ export default {
                         cache: 5000,
                         name: 'getBaskets',
                         transform: items => {
-                            return items.map(i => {
-                                return {
-                                    value: i.id,
-                                    text: `${i.title} (${i.description})`,
-                                    delivery_date: i.delivery_date,
-                                    has_obs: !!i.observation
-                                }
-                            })
+                            return items
+                                .map(i => {
+                                    let date = moment(i.delivery_date).format('DD/MM/YY')
+                                    return {
+                                        value: i.id,
+                                        text: `${date} ${i.title}`,
+                                        // text: `${i.title} (${i.description})`,
+                                        delivery_date: i.delivery_date,
+                                        has_obs: !!i.observation
+                                    }
+                                })
+                                .sort((a, b) => {
+                                    return a.delivery_date > b.delivery_date ? -1 : 1
+                                })
                         }
                     },
                     created(component, rowItem, prefetchResult) {
