@@ -205,6 +205,10 @@ font-style: italic;
                 })
                 r = r.data ? r.data : r
                 alert('Merci, la réservation est confirmée!')
+                this.order = {
+                    email: '',
+                    items: []
+                }
             } catch (err) {
                 if (err.code === 'NOT_AVAILABLE') {
                     return alert(
