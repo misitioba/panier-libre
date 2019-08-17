@@ -89,7 +89,7 @@ async function getAvailable(basket_id, client_id) {
         `SELECT 
         b.quantity-IFNULL(sum(oi.quantity),0) as available
   FROM baskets as b 
-  LEFT JOIN order_items as oi on oi.basket_id = b.id
+  LEFT JOIN order_items as oi on oi.basket_id = b.id AND oi.is_canceled = 0
   LEFT JOIN orders as o on o.id = oi.order_id
   WHERE b.id = ? AND o.client_id <> ?
   GROUP BY b.id`, [basket_id, client_id], {
@@ -118,20 +118,20 @@ async function saveOrder(order) {
      group by o.id`
     let existingOrder = null
         /*
-                                                                                              let existingOrder = await app.dbExecute(
-                                                                                                  searchOneOrderQuery, [
-                                                                                                      getMoment()
-                                                                                                      .subtract(7, 'days')
-                                                                                                      .startOf('day')
-                                                                                                      ._d.getTime(),
-                                                                                                      getMoment()
-                                                                                                      .endOf('day')
-                                                                                                      ._d.getTime()
-                                                                                                  ], {
-                                                                                                      dbName,
-                                                                                                      single: true
-                                                                                                  }
-                                                                                              ) */
+                                                                                                    let existingOrder = await app.dbExecute(
+                                                                                                        searchOneOrderQuery, [
+                                                                                                            getMoment()
+                                                                                                            .subtract(7, 'days')
+                                                                                                            .startOf('day')
+                                                                                                            ._d.getTime(),
+                                                                                                            getMoment()
+                                                                                                            .endOf('day')
+                                                                                                            ._d.getTime()
+                                                                                                        ], {
+                                                                                                            dbName,
+                                                                                                            single: true
+                                                                                                        }
+                                                                                                    ) */
     if (existingOrder) {
         order_id = existingOrder.id
         if (order.observation) {
