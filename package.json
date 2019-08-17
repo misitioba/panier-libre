@@ -1,8 +1,8 @@
 {
-  "name": "basket-hot",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@gitlab.com:misitioba/basket-hot.git",
-  "author": "Javi <arancibiajav@gmail.com>",
-  "license": "MIT"
+    "name": "basket-hot",
+    "version": "1.0.1",
+    "main": "index.js",
+    "repository": "git@gitlab.com:misitioba/basket-hot.git",
+    "author": "Javi <arancibiajav@gmail.com>",
+    "license": "MIT"
 }
