@@ -190,11 +190,14 @@ font-style: italic;
                     name: 'saveCustomerOrder',
                     args: [
                         Object.assign({
-                                umid: window._um_id
-                            },
+                            umid: window._um_id
+                        },
                             this.order, {
                                 items: this.order.items.map(item => {
-                                    return Object.assign({}, item)
+                                    let newItem = Object.assign({}, item)
+                                    delete newItem.description
+                                    delete newItem.title
+                                    return newItem
                                 })
                             }
                         )
@@ -235,7 +238,7 @@ font-style: italic;
                 args: [{
                     umid: window._um_id
                 }],
-                transform: function(result) {
+                transform: function (result) {
                     return result.filter(r => {
                         if (r.is_archived) return false
                         if (!moment(r.delivery_date).isSameOrAfter(moment(), 'day')) {
@@ -249,7 +252,7 @@ font-style: italic;
             this.fetched = true
         }
     },
-    created() {},
+    created() { },
     mounted() {
         this.fetchBaskets()
     }
