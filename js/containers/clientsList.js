@@ -114,6 +114,7 @@ Vue.component('client-details', {
             </div>
             <div class="form_bottom_btn_group">
                 <button class="btn" @click="save">Enregistrer</button>
+                <button class="btn btn-danger" @click="()=>remove()" v-show="form.id">Effacer</button>
             </div>
         </div>
     `,
@@ -146,6 +147,20 @@ Vue.component('client-details', {
             })
             this.$emit('onDirty', false)
             this.$emit('close')
+        },
+        async remove() {
+            if (
+                window.confirm(
+                    `Action destructive: toutes les commandes associées au client seront supprimées. Continuer?`
+                )
+            ) {
+                await window.api.funql({
+                    name: 'removeClient',
+                    args: [this.form.id]
+                })
+                this.$emit('onDirty', false)
+                this.$emit('close')
+            }
         }
     },
     mounted() {
