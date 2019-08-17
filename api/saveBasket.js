@@ -6,13 +6,14 @@ module.exports = _app => {
         dbName = this.dbName
         if (form.id) {
             return await app.dbExecute(
-                'UPDATE baskets SET title = ? , delivery_date = ?, description = ?, quantity = ?, is_archived = ?, price = ? WHERE id = ?', [
+                'UPDATE baskets SET title = ? , delivery_date = ?, description = ?, quantity = ?, is_archived = ?, price = ?, priority = ? WHERE id = ?', [
                     form.title,
                     form.delivery_date,
                     form.description,
                     form.quantity,
                     form.is_archived,
                     form.price,
+                    isNaN(parseInt(form.priority)) ? 0 : parseInt(form.priority),
                     form.id
                 ], {
                     dbName: this.dbName
@@ -20,12 +21,13 @@ module.exports = _app => {
             )
         } else {
             let r = await app.dbExecute(
-                'INSERT INTO baskets (title, description, quantity, price, delivery_date, creation_date)VALUES(?,?,?,?,?,?)', [
+                'INSERT INTO baskets (title, description, quantity, price, delivery_date, priority, creation_date)VALUES(?,?,?,?,?,?,?)', [
                     form.title,
                     form.description,
                     form.quantity,
                     form.price,
                     form.delivery_date,
+                    isNaN(parseInt(form.priority)) ? 0 : parseInt(form.priority),
                     form.creation_date
                 ], {
                     dbName: this.dbName

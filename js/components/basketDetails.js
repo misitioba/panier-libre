@@ -26,7 +26,12 @@ Vue.component('basket-details', {
                 <label>Date de livraison</label>
                 <input type="text" id="datepicker" ref="delivery_date" />
             </div>
-
+            <div class="form_group">
+                <label>Priority
+                <span>Règle de tri lors de la réservation du client</span>
+                </label>
+                <input type="number" step="1" v-model="form.priority" />
+            </div>
             <div class="form_group" v-show="form.id" v-if="false">
                 <label>Liste de réservation</label>
                 <div>

@@ -190,8 +190,8 @@ font-style: italic;
                     name: 'saveCustomerOrder',
                     args: [
                         Object.assign({
-                            umid: window._um_id
-                        },
+                                umid: window._um_id
+                            },
                             this.order, {
                                 items: this.order.items.map(item => {
                                     let newItem = Object.assign({}, item)
@@ -242,21 +242,29 @@ font-style: italic;
                 args: [{
                     umid: window._um_id
                 }],
-                transform: function (result) {
-                    return result.filter(r => {
-                        if (r.is_archived) return false
-                        if (!moment(r.delivery_date).isSameOrAfter(moment(), 'day')) {
-                            return false
-                        }
-                        return true
-                    })
+                transform: function(result) {
+                    return result
+                        .filter(r => {
+                            if (r.is_archived) return false
+                            if (!moment(r.delivery_date).isSameOrAfter(moment(), 'day')) {
+                                return false
+                            }
+                            return true
+                        })
+                        .map(a => {
+                            if (!a.priority) a.priority = 9999
+                            return a
+                        })
+                        .sort((a, b) => {
+                            return a.priority > b.priority ? 1 : -1
+                        })
                 }
             })
             this.baskets = result.data ? result.data : result
             this.fetched = true
         }
     },
-    created() { },
+    created() {},
     mounted() {
         this.fetchBaskets()
     }
