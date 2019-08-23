@@ -184,6 +184,7 @@ font-style: italic;
         async validate() {
             if (!this.order.fullname) return alert('Nom complet requis')
             if (!this.order.email) return alert('Email requis')
+            if (this.order.items.length === 0) return alert(`Vous devez d'abord sélectionner un panier`)
 
             try {
                 let r = await api.funql({
