@@ -54,7 +54,7 @@ align-items: center;
                 
             }
         `,
-            scopeValue: this.scopeValue !== undefined ? this.value : false
+            scopeValue: this.value !== undefined ? this.value : false
         }
     },
     computed: {},

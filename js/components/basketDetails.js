@@ -47,7 +47,7 @@ Vue.component('basket-details', {
             </div>
             <div class="form_group" v-show="!form.id">
                 <label>Les abonnés</label>
-                <toggle-component ref="toggleSubscribers" @toggle="()=>form.bulkSubscribers=!form.bulkSubscribers"></toggle-component>
+                <toggle-component ref="toggleSubscribers" @togggle="()=>form.bulkSubscribers=!form.bulkSubscribers" v-model="form.bulkSubscribers"></toggle-component>
                 <p></p>
                 <p class="quote">Cela ajoutera en masse tous les clients abonnés.</p>
             </div>
@@ -126,7 +126,7 @@ padding: 5px 20px;
                 gridColumns: '1fr 1fr 1fr 1fr'
             },
             form: {
-                bulkSubscribers: false,
+                bulkSubscribers: true,
                 delivery_date: '',
                 bookings: []
             },
