@@ -92,6 +92,8 @@ font-size: 12px;
                 display: grid;
                 grid-template-columns: 1fr;
                 margin-top:10px;
+                max-width: 100%;
+                overflow: auto;
             }
             .filterRow{
                 padding:5px;
