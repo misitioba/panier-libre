@@ -64,7 +64,7 @@ export default {
                 'has_obs'
             ],
             valueTransforms: {
-                has_obs: v => (v ? 'Oui' : ''),
+                has_obs: v => ((v.observation||"").split(' ').join('').length>0 ? 'Oui' : ''),
                 delivery_date: v => moment(v.delivery_date).format('DD/MM/YYYY'),
                 booking_date: v => moment(v.booking_date).format('DD/MM/YYYY'),
                 quantity: createEditableColumn({
