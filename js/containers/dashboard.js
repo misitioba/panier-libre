@@ -45,16 +45,18 @@ export default {
                 delivery_date: ['gt', 'gte', 'lt', 'lte', 'equal']
                     // is_archived: ['boolean']
             },
-            gridColumns: 'minmax(200px,1fr) minmax(60px,100px) minmax(300px,1fr) 1fr 1fr 1fr 1fr',
+            gridColumns: 'minmax(200px,1fr) minmax(200px,1fr) minmax(60px,100px) minmax(300px,1fr) 1fr 1fr 1fr 1fr',
             colsTransforms: {
-                has_obs: () => `OBS ?`,
-                email: () => 'CLIENT',
+                fullname: () => `Nom complet`.toUpperCase(),
+                has_obs: () => `Obs ?`.toUpperCase(),
+                email: () => 'Email'.toUpperCase(),
                 delivery_date: () => 'Date de livraison'.toUpperCase(),
                 booking_date: () => 'Date de réservation'.toUpperCase(),
                 is_canceled: () => 'annulé'.toUpperCase(),
                 basket_id: () => 'Panier'.toUpperCase()
             },
             cols: [
+                'fullname',
                 'email',
                 'quantity',
                 'basket_id',
