@@ -15,11 +15,7 @@ Vue.component('sidebar', {
                 </li>
                 <li>
                     <button class="btn" @click="$router.push({name:'baskets'})">Paniers</button>
-                </li>
-                <li>
-                <button class="btn" @click="$router.push({name:'orders'})">Commandes</button>
-            </li>
-                
+                </li>                
                 <li>
                     <button class="btn" @click="$router.push({name:'clients'})">Les clients</button>
                 </li>
@@ -29,16 +25,16 @@ Vue.component('sidebar', {
                 </li>
                 <li>
                 <a class="btn" :href="'${window.cwd(
-    'reserver'
-  )}'+'?umid='+userModuleId" target="_blank">Reserver</a>
+        'reserver'
+    )}'+'?umid='+userModuleId" target="_blank">Reserver</a>
             </li>
                 
                 
             </ul>
 
             <div class="bottom">
-            <i @click="collapsed = !collapsed" v-show="collapsed" class="fas fa-angle-double-left toggle_btn"></i>
-            <i @click="collapsed = !collapsed" v-show="!collapsed" class="fas fa-angle-double-right toggle_btn"></i>
+            <i @click="toggle(false)" v-show="collapsed" class="fas fa-angle-double-left toggle_btn"></i>
+            <i @click="toggle(true)" v-show="!collapsed" class="fas fa-angle-double-right toggle_btn"></i>
             </div>
 
         </div>
@@ -71,7 +67,7 @@ width: 100%;
             }
                 .sidebar_slot{
                     overflow-y: auto;
-                    max-height: calc(100vh - 100px);
+                    max-height: calc(100vh - 35px);
                 }
                 ul{
                     list-style: none;
@@ -87,11 +83,11 @@ width: 100%;
                     
                 }
                 .sidebar_menu{
-                    position:relative;
-                    width:auto;
-                    height:calc(100vh);
-                    background-color:#b5a075;
-                    margin-top:-100px;
+                    position: relative;
+                    width: auto;
+                    height: calc(100vh);
+                    background-color: #b5a075;
+                    margin-top: -35px;
                     grid-area: 'sidebar'
                 }
                 .sidebar.collapsed{
@@ -107,16 +103,40 @@ width: 100%;
                 }
             `,
             collapsed: true,
-            userModuleId: ''
+            userModuleId: '',
+            resizeInterval: null,
+            toggleColdown: null
         }
+    },
+    destroyed() {
+        clearInterval(this.resizeInterval)
     },
     computed: {
         sidebarClass() {
             return `sidebar ${this.collapsed ? 'collapsed' : ''}`
         }
     },
-    created() {},
+    created() { },
+    methods: {
+        toggle(value) {
+            this.collapsed = value
+            this.toggleColdown = Date.now() + 1000 * 20
+        }
+    },
     async mounted() {
+        this.resizeInterval = setInterval(() => {
+            if (window.innerWidth < 768) {
+                if (this.toggleColdown === null && this.collapsed) {
+                    this.toggle(false)
+                } else {
+                    if (Date.now() > this.toggleColdown) {
+                        this.toggle(false)
+                    }
+                }
+            } else {
+
+            }
+        }, 1000)
         this.userModuleId = await api.funql({ name: 'getUserModuleId' })
     }
 })

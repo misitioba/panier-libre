@@ -43,9 +43,9 @@ export default {
                 email: ['include', 'gt', 'gte', 'lt', 'lte', 'equal'],
                 quantity: ['include', 'gt', 'gte', 'lt', 'lte', 'equal'],
                 delivery_date: ['gt', 'gte', 'lt', 'lte', 'equal']
-                    // is_archived: ['boolean']
+                // is_archived: ['boolean']
             },
-            gridColumns: 'minmax(200px,1fr) minmax(200px,1fr) minmax(60px,100px) minmax(300px,1fr) 1fr 1fr 1fr 1fr',
+            gridColumns: 'minmax(150px,1fr) minmax(150px,1fr) minmax(120px,1fr) minmax(250px,1fr) 1fr 1fr 1fr;',
             colsTransforms: {
                 fullname: () => `Nom complet`.toUpperCase(),
                 has_obs: () => `Obs ?`.toUpperCase(),
@@ -61,12 +61,12 @@ export default {
                 'quantity',
                 'basket_id',
                 'booking_date',
-                'delivery_date',
+                //'delivery_date',
                 'is_canceled',
                 'has_obs'
             ],
             valueTransforms: {
-                has_obs: v => ((v.observation||"").split(' ').join('').length>0 ? 'Oui' : ''),
+                has_obs: v => ((v.observation || "").split(' ').join('').length > 0 ? 'Oui' : ''),
                 delivery_date: v => moment(v.delivery_date).format('DD/MM/YYYY'),
                 booking_date: v => moment(v.booking_date).format('DD/MM/YYYY'),
                 quantity: createEditableColumn({
@@ -98,7 +98,7 @@ export default {
                         transform: items => {
                             return items
                                 .map(i => {
-                                    let date = moment(i.delivery_date).format('DD/MM/YY')
+                                    let date = moment(i.delivery_date).add(1, 'day').format('DD/MM/YY')
                                     return {
                                         value: i.id,
                                         text: `${date} ${i.title}`,
@@ -116,7 +116,7 @@ export default {
                         component.$emit('set', {
                             selected: rowItem.basket_id,
                             items: prefetchResult
-                                // transform: v => ({ value: v.id, text: v.description })
+                            // transform: v => ({ value: v.id, text: v.description })
                         })
                     },
                     save: (selected, item) => {
@@ -197,9 +197,9 @@ export default {
         async refresh() {
             this.items = await window.api.funql({
                 name: 'getDashboardData',
-                transform: function(items) {
+                transform: function (items) {
                     return items
-                        // return items.filter(i => i.is_archived === 0)
+                    // return items.filter(i => i.is_archived === 0)
                 }
             })
         }

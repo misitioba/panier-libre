@@ -7,9 +7,9 @@ var uniqid = require('uniqid')
 window.COL_TRANSFORM = {
     upperCaseTransform: () =>
         col
-        .toUpperCase()
-        .split('_')
-        .join(' ')
+            .toUpperCase()
+            .split('_')
+            .join(' ')
 }
 
 Vue.component('table-component', {
@@ -86,7 +86,7 @@ color: rgb(53, 153, 193);
 
 font-style: oblique;
 
-font-size: 12px;
+                font-size: 12px;
             }
             .table_component .table{
                 display: grid;
@@ -114,8 +114,8 @@ align-items: center;
                 
                 display: grid;
                 grid-template-columns: ${
-  this.gridColumns ? this.gridColumns : '60px 1fr 1fr'
-};
+                this.gridColumns ? this.gridColumns : '60px 1fr 1fr'
+                };
                 padding:5px;
             }
             .table_component .body_row{
@@ -137,6 +137,8 @@ font-weight: bold;
             }
             .table_component .row .col{
                 padding: 5px 20px;
+                font-size: 12px;
+                word-wrap: break-word;
             }
             @media only screen and (max-width: 639px) {
                 
@@ -154,12 +156,12 @@ font-weight: bold;
         }
     },
     computed: {
-        getFilterCols(){
-            if(this.items.length===0) return this.getCols
+        getFilterCols() {
+            if (this.items.length === 0) return this.getCols
             else {
                 let cols = Object.keys(this.items[0])
-                let newCols = Object.keys(this.filters).filter(c=>{
-                    return !cols.find(cc=>cc==c)
+                let newCols = Object.keys(this.filters).filter(c => {
+                    return !cols.find(cc => cc == c)
                 })
                 return cols.concat(newCols)
             }
@@ -204,14 +206,14 @@ font-weight: bold;
                         rta[col] = this.transformValue(item, col)
                     }
                 })
-                rta._data = Object.assign({},item)
+                rta._data = Object.assign({}, item)
                 return rta
             })
             let result = this.exportCSV(data, this)
             exportCSV(result.data, result.filename, result.headers)
         },
         exportJPG() {
-            html2canvas(this.$refs.table).then(function(canvas) {
+            html2canvas(this.$refs.table).then(function (canvas) {
                 var uri = canvas.toDataURL('image/jpg')
                 let date = require('moment-timezone')()
                     .tz('Europe/Paris')
@@ -235,13 +237,13 @@ font-weight: bold;
         filteredItems() {
             var items = this.sortedItems
             if (!this.filters) return items
-            
+
             Object.keys(this.filters).forEach(key => {
-                
-                if (this.filtersState[key] === 'boolean'){
-                    items = items.filter(i=>i[key] == this.filtersValue[key])
+
+                if (this.filtersState[key] === 'boolean') {
+                    items = items.filter(i => i[key] == this.filtersValue[key])
                 }
-                
+
                 if (this.filtersState[key] === 'include' && !!this.filtersValue[key]) {
                     items = items.filter(i => {
                         let value = this.transformValue(i, key)
@@ -313,12 +315,12 @@ font-weight: bold;
                 typeof colValue === 'object' && typeof colValue.component === 'string'
             )
         },
-        getFilterTypes(filterKey){
-            if(!this.filters[filterKey]) return false
-            if(this.filters[filterKey] instanceof Array){
+        getFilterTypes(filterKey) {
+            if (!this.filters[filterKey]) return false
+            if (this.filters[filterKey] instanceof Array) {
                 return this.filters[filterKey]
-            }else{
-                return this.filters[filterKey].types || ['equal','include']
+            } else {
+                return this.filters[filterKey].types || ['equal', 'include']
             }
         },
         getComponentName(colValue) {
@@ -328,9 +330,9 @@ font-weight: bold;
         transformColumn(col) {
             let upperCaseTransform = () =>
                 col
-                .toUpperCase()
-                .split('_')
-                .join(' ')
+                    .toUpperCase()
+                    .split('_')
+                    .join(' ')
             let transforms = this.colsTransforms || {}
             return transforms[col] ? transforms[col]() : upperCaseTransform()
         },

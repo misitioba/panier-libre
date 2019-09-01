@@ -14,7 +14,9 @@ Vue.component('bf-order-resume', {
         </div>
         <div class="basket" v-for="(item, index) in value.items" :key="item.id" @click="$emit('select',item)">
             <div class="a1 removeButton">
-                <button class="" @click="$emit('remove',item)">X</button>
+                <button class="" @click="$emit('remove',item)">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAEXUlEQVR4nO2dT2gdRRjAf/N4hjSkIUQpoeYUQi05SCjqwUPB1EOl0kMJ9KZgC73ZS/FSKngS6SkEEREPvdhDD6UF/wRyEIqWQqshlkKV2lJBbIkhNmlJk2fGw6y8+Nzdt9mZfJP33vcLQ+Dtzn6zv0x2ZnfffmssFmXrqcRuQKegooVQ0UKoaCGqsRtgMF3ALuAl4GWgH78OsA4sAFeBWWDeYld92+mNjfiDE/wu8COwBtiAZQ0n+zjQH3M/LTaeaGAAOAcsBRbcWP4EpoDejhMN9AGfAk+3WPK/5THwIdAdS7T4YGgwVeAIMAF0CYXtAd4CDhpMlAlAjKADwKHktySDwBu4/yZxYsw6hoHxjGXrSfElbb8qwOvAELAYIMamiNGjj5Hem1eAM8BOi32mbAFeAGZI/4MN4w5b8ggPgs8BD0gfsO4Cg4HivIMbANPi3CbCoCjdow8nstP4xmL/CBTnMjCfsWwE2B8oTmHERBtMP/B2Rsxl4PNQsSx2HvgiY3EFOGEw3aHiFUGyR48DezKWzQC/Bo53AXcqnsY+4JXA8XIREW0wvcBrpB82ngBfA48Ch70HfJuxbDdwILnOIkLT6Z3B9ODmnj5Twb24Hp22jd9xM459BuMR4n9UgJ+BWkrcLtxUb9pg7pfc/jqu3YsW23xKWmAE/wD4C5lT5VYqa8B3wEihmVAB0b9tg53azmUi1PSup8A6nUxvkZX0DosQRUSHuPbQztSKrFRE9JxnQ9qZFdw0sikmGfCyV8AM4k6d+xsWPQu8V6Jxrcpp/tt7a8APwPe2wD3JpqIzK2KGgTulKrcmOyx2pWxlHQyFUNFCqGghVLQQMe4ZriZl4/y8CnST/Yev4aZSvnUqSR35/S57awZ3/63MtYFTbPgyC27nx4Cfcuq8D/Q11HkRuJFT5ywN31DCXaadLNlur9tfMUT3ZWxvKqdO6r1E4KOcOsMZdUZjiI5xjF7e5Od5y5ZK1Al9g6EQOhgKoaKFUNFCqGghVLQQKloIFS2EihZCRQuhooVQ0UKoaCFUtBAqWggVLYSKFkJFC6GihVDRQqhoIVS0ECpaCBUthIoWQkULoaKFUNFCqGghVLQQKloIFS2EihZCRQuhooXoRNEdk5t0MOPz3SXqPB84zpYR4znDjw3mM+oP7VRx6dEO5tSZNJhPqOcUreIefzvcpM4k9USDFVxi8JNlG+6DZjcojmY3aAV8X1rQKRRK55OHj2jxHMwRWcCzY/mIfkL+067thHcWYN9j9E3fBrQIs0Ts0TVc8tZ2P1avAtPEEm1d4tMZXBLXdmYWuG6LJHrNwffQcQv4ivbt1cvARaBsRt46PjkokpOdMeAa8ZOxhi5/A5cI9d6BIBtxuaF/2QZyQpYbwGgIP8FEJ7LfBK4Q/uVi0uUp8CXwaig3Flv+WkcjyauRhnC9+ygun38frXGav447Hs8B53Ep6x9azwFwI8FEK/m0Qm9rC1S0ECpaCBUtxD9DwzyeK3US/wAAAABJRU5ErkJggg==" style="max-width:100%">
+                </button>
             </div>
             <div class="a2 title" v-html="item.title">
                 <div class="title" v-if="false" v-html="item.title"></div>
@@ -151,6 +153,6 @@ font-style: italic;
             this.$emit('input', newValue)
         }
     },
-    created() {},
-    mounted() {}
+    created() { },
+    mounted() { }
 })
