@@ -2,6 +2,7 @@ module.exports = app => {
     return async function getDashboardData() {
         let query = `
 SELECT 
+    b.title as basket_title, b.description as basket_description,
     orderItem.id, b.is_archived, c.fullname, c.email, orderItem.quantity,b.id as basket_id, o.creation_date as booking_date
     #, b.delivery_date
     , orderItem.is_canceled, o.observation as observation, o.id as orderId

@@ -162,10 +162,17 @@ export default {
                     .tz('Europe/Paris')
                     .format('DD-MM-YYYY-[a]-HH-mm')
 
+                data = data.filter(d => !d.is_archived)
                 data = data.map(single => {
                     single.observation = single._data.observation
+                    delete single.is_canceled
+                    delete single.has_obs
+                    single.basket_title = single._data.basket_title
+                    single.basket_description = single._data.basket_description.replace(/\n|\r/g, " / ").trim();
                     return single
                 })
+
+
                 return {
                     data,
                     filename: `basket-hot-commandes-${date}`
