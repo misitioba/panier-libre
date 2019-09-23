@@ -20,7 +20,8 @@ Vue.component('table-component', {
         'valueTransforms',
         'cols',
         'gridColumns',
-        'filters'
+        'filters',
+        'name'
     ],
     template: `
         <div ref="scope">
@@ -38,7 +39,7 @@ Vue.component('table-component', {
                     <div class="filterRow" v-for="(col, index) in getFilterCols" :key="col" v-show="!!filters[col]">
                         <label v-html="transformColumn(col)"></label>
                         <select v-model="filtersState[col]" @change="filterChange">
-                            <option v-for="type in getFilterTypes(col)" :value="type" v-html="type">
+                            <option v-for="type in getFilterTypes(col)" :value="type.value" v-html="type.label">
                             </option>
                         </select>
                         
@@ -281,6 +282,12 @@ font-weight: bold;
             return items
         },
         filterChange() {
+
+            if(this.name){
+                localStorage.setItem(`${this.name}_filter_state`, JSON.stringify(this.filtersState))
+                localStorage.setItem(`${this.name}_filters_value`, JSON.stringify(this.filtersValue))
+            }
+
             this.$forceUpdate()
         },
         toggleSort(col) {
@@ -316,11 +323,20 @@ font-weight: bold;
             )
         },
         getFilterTypes(filterKey) {
+            let typeLabel = {
+                gt: `gt (Supérieure à)`,
+                gte:`gte (plus grand ou égal)`,
+                include: `include (Comprendre)`,
+                lt:`lt (plus bas que)`,
+                lte:`lte (inférieur ou égal)`,
+                equal:`equal (égale)`
+            }
+
             if (!this.filters[filterKey]) return false
             if (this.filters[filterKey] instanceof Array) {
-                return this.filters[filterKey]
+            return this.filters[filterKey].map(t=>({value:t,label:typeLabel[t]||t}))
             } else {
-                return this.filters[filterKey].types || ['equal', 'include']
+                return (this.filters[filterKey].types || ['equal', 'include']).map(t=>({value:t,label:t}))
             }
         },
         getComponentName(colValue) {
@@ -372,5 +388,35 @@ font-weight: bold;
             })
             this.$forceUpdate()
         })
+
+        setTimeout(()=>{
+
+
+        
+        if(this.name){
+            let state = localStorage.getItem(`${this.name}_filters_state`)
+            if(!!state){
+                try{
+                    state = JSON.parse(state)
+                    Object.keys(state).forEach(k=>{
+                        this.filtersState[k] = state[k]
+                    })
+                    
+                    this.$forceUpdate()
+                }catch(err){}
+            }
+            let values = localStorage.getItem(`${this.name}_filters_value`)
+            if(!!values){
+                try{
+                    values = JSON.parse(values)
+                    Object.keys(values).forEach(k=>{
+                        this.filtersValue[k] = values[k]
+                    })
+                    this.$forceUpdate()
+                }catch(err){}
+            }
+            this.filtersState.show=true
+        }
+        },1000)
     }
 })

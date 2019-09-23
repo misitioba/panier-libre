@@ -17,7 +17,7 @@ export default {
                 <button class="btn" @click="refresh">Refresh</button>
             </div>
             
-            <table-component @rowClick="rowClick" :exportCSV="exportCSV" :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
+            <table-component name="dashTable" @rowClick="rowClick" :exportCSV="exportCSV" :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
 
             <modal-window ref="modal" :params="modalParams" v-show="!!modal" v-model="modal" @close="modal=''"></modal-window>
         </div>

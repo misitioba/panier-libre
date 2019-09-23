@@ -87,7 +87,7 @@ width: 100%;
                     width: auto;
                     height: calc(100vh);
                     background-color: #b5a075;
-                    margin-top: -35px;
+                    margin-top: -36px;
                     grid-area: 'sidebar'
                 }
                 .sidebar.collapsed{
