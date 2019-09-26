@@ -1,9 +1,9 @@
-module.exports = async (app, config) => {
+module.exports = async(app, config) => {
     app.get(
         config.getRouteName('app.js'),
         app.webpackMiddleware({
             entry: config.getPath('js/app.js'),
-            output: config.getPath('tmp/app.js')
+            output: config.getPath('tmp/app.js'),
         })
     )
 
@@ -22,11 +22,11 @@ module.exports = async (app, config) => {
                 html = html.split('__CALLBACK__').join(req.query.callback)
                 html = html.split('__API_ENDPOINT_URL__').join(fullUrl + '/')
                 return html
-            }
+            },
         })
     )
 
-    app.get(config.getRouteName('reserver'), async (req, res) => {
+    app.get(config.getRouteName('reserver'), async(req, res) => {
         var fullUrl = req.protocol + '://' + req.get('host')
         if (process.env.NODE_ENV === 'production') {
             fullUrl = process.env.DOMAIN || fullUrl
@@ -43,8 +43,8 @@ module.exports = async (app, config) => {
                     var URI = '${fullUrl}';
                     let s = document.createElement('script')
                     s.src = URI+'/basket-hot/booking_form_client.js?callback=initstcbh&umid=${
-            req.query.umid
-            }'
+                      req.query.umid
+                    }'
                     document.querySelector('body').append(s)
                     window.initstcbh = function (app){
                         app.mount('.app_goes_here')
@@ -82,16 +82,16 @@ module.exports = async (app, config) => {
             }
             return {
                 moduleId: config.id,
-                dbName
+                dbName,
             }
-        }
+        },
     })
 
     app.loadFunctions({
         path: config.getPath('shared-functions'),
         scope: {
-            dbName: config.db_name
-        }
+            dbName: config.db_name,
+        },
     })
 
     // app.enableProgramationsSchedule()
@@ -106,9 +106,29 @@ module.exports = async (app, config) => {
             context: {
                 cwd: config.getRouteName(),
                 head: {
-                    title: config.title
-                }
-            }
+                    title: config.title,
+                },
+            },
+        })
+    )
+
+    app.get(
+        config.getRouteName('/version'),
+        app.builder.transformFileRoute({
+            cwd: config.getPath(),
+            source: 'changelog.md',
+            transform: [
+                async raw => {
+                    let package = JSON.parse(
+                        (await require('sander').readFile(
+                            config.getPath('package.json')
+                        )).toString('utf-8')
+                    )
+                    console.log(raw, package.version)
+                    raw = raw.split('PKG_VERSION').join(package.version)
+                    return raw
+                },
+            ],
         })
     )
 }

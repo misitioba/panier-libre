@@ -16,6 +16,11 @@ export default {
             <div class="btn_group">
                 <button class="btn" @click="refresh">Refresh</button>
             </div>
+
+            <div class="" style="margin-bottom:10px">
+                <label>Voir les paniers archivés</label>
+                <toggle-component ref="toggleArchived" @toggle="toggleArchived"></toggle-component>
+            </div>
             
             <table-component name="dashTable" @rowClick="rowClick" :exportCSV="exportCSV" :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
 
@@ -26,6 +31,7 @@ export default {
     data() {
         var self = this
         return {
+            showArchived: false,
             modal: '',
             modalParams: {
                 id: ''
@@ -43,7 +49,7 @@ export default {
                 email: ['include', 'gt', 'gte', 'lt', 'lte', 'equal'],
                 quantity: ['include', 'gt', 'gte', 'lt', 'lte', 'equal'],
                 delivery_date: ['gt', 'gte', 'lt', 'lte', 'equal']
-                // is_archived: ['boolean']
+                    // is_archived: ['boolean']
             },
             gridColumns: 'minmax(150px,1fr) minmax(150px,1fr) minmax(120px,1fr) minmax(250px,1fr) 1fr 1fr 1fr;',
             colsTransforms: {
@@ -61,12 +67,13 @@ export default {
                 'quantity',
                 'basket_id',
                 'booking_date',
-                //'delivery_date',
+                // 'delivery_date',
                 'is_canceled',
                 'has_obs'
             ],
             valueTransforms: {
-                has_obs: v => ((v.observation || "").split(' ').join('').length > 0 ? 'Oui' : ''),
+                has_obs: v =>
+                    (v.observation || '').split(' ').join('').length > 0 ? 'Oui' : '',
                 delivery_date: v => moment(v.delivery_date).format('DD/MM/YYYY'),
                 booking_date: v => moment(v.booking_date).format('DD/MM/YYYY'),
                 quantity: createEditableColumn({
@@ -98,7 +105,9 @@ export default {
                         transform: items => {
                             return items
                                 .map(i => {
-                                    let date = moment(i.delivery_date).add(1, 'day').format('DD/MM/YY')
+                                    let date = moment(i.delivery_date)
+                                        .add(1, 'day')
+                                        .format('DD/MM/YY')
                                     return {
                                         value: i.id,
                                         text: `${date} ${i.title}`,
@@ -116,7 +125,7 @@ export default {
                         component.$emit('set', {
                             selected: rowItem.basket_id,
                             items: prefetchResult
-                            // transform: v => ({ value: v.id, text: v.description })
+                                // transform: v => ({ value: v.id, text: v.description })
                         })
                     },
                     save: (selected, item) => {
@@ -168,10 +177,11 @@ export default {
                     delete single.is_canceled
                     delete single.has_obs
                     single.basket_title = single._data.basket_title
-                    single.basket_description = single._data.basket_description.replace(/\n|\r/g, " / ").trim();
+                    single.basket_description = single._data.basket_description
+                        .replace(/\n|\r/g, ' / ')
+                        .trim()
                     return single
                 })
-
 
                 return {
                     data,
@@ -204,14 +214,20 @@ export default {
         async refresh() {
             this.items = await window.api.funql({
                 name: 'getDashboardData',
-                transform: function (items) {
-                    return items
-                    // return items.filter(i => i.is_archived === 0)
+                args: [this.showArchived],
+                transform: function(items) {
+                    let [showArchived] = args
+                    return items.filter(i => (i.is_archived == showArchived ? 1 : 0))
                 }
             })
+        },
+        toggleArchived() {
+            this.showArchived = !this.showArchived
+            this.refresh()
         }
     },
     mounted() {
         this.refresh()
+        this.$refs.toggleArchived.$emit('set', this.showArchived)
     }
 }
