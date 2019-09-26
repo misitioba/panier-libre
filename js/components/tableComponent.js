@@ -21,11 +21,13 @@ Vue.component('table-component', {
         'cols',
         'gridColumns',
         'filters',
-        'name'
+        'name',
+        'paginator'
     ],
     template: `
         <div ref="scope">
         <div class="table_component" ref="root">
+            
             <div class="" v-if="!!filters">
                 
             <button class="btn btn-small" @click="filtersState.show=true" v-show="!filtersState.show"><i class="fas fa-filter"></i> Montrer</button>
@@ -53,6 +55,26 @@ Vue.component('table-component', {
                     </div>
                 </div>
             </div>
+
+            <div v-show="paginator">
+                <label>
+                    Page 
+                    <span v-html="internalPaginator.page?internalPaginator.page+1:'1'"></span>&nbsp;/&nbsp;
+                    <span v-html="internalPaginator.pages"></span>
+                </label>
+                <button :disabled="!canPaginate(-1)" @click="canPaginate(-1) && paginate(-1)">Prev</button>
+                <button :disabled="!canPaginate(1)" @click="canPaginate(1) && paginate(1)">Next</button>
+                <label>
+                Montrer
+                </label>
+                <select @change="onPaginationSizeChange" class="paginationSize">
+                        <option v-for="(key) in paginationSizes" :key="key" v-html="key" :value="key">
+                        </option>
+                </select>
+                
+            </div>
+
+
             <div class="table" ref="table">
                 <div class="row header">
                     <div class="col" v-for="(col, index) in getCols" :key="col" @click="toggleSort(col)">
@@ -73,11 +95,32 @@ Vue.component('table-component', {
                     </div>
                 </div>
             </div>
+
+
+            <div v-show="paginator" style="margin-top:5px">
+                <label>
+                    Page 
+                    <span v-html="internalPaginator.page?internalPaginator.page+1:'1'"></span>&nbsp;/&nbsp;
+                    <span v-html="internalPaginator.pages"></span>
+                </label>
+                <button :disabled="!canPaginate(-1)" @click="canPaginate(-1) && paginate(-1)">Prev</button>
+                <button :disabled="!canPaginate(1)" @click="canPaginate(1) && paginate(1)">Next</button>
+                <label>
+                Montrer
+                </label>
+                <select @change="onPaginationSizeChange" class="paginationSize">
+                        <option v-for="(key) in paginationSizes" :key="key" v-html="key" :value="key">
+                        </option>
+                </select>
+                
+            </div>
+
         </div>
         </div>
     `,
     data() {
         return {
+            internalPaginator: {},
             styles: `
             .table_component .empty_text{
                 text-align:center;
@@ -127,7 +170,7 @@ align-items: center;
             }
             .table_component .row.header{
                 cursor:pointer;
-                background-color:#975d50;
+                background-color:#181721;
             }
             .table_component .row.header .col{
                 padding: 15px 20px;
@@ -144,6 +187,10 @@ font-weight: bold;
             @media only screen and (max-width: 639px) {
                 
             }
+            .paginationSize{
+                color: black;
+                width: 60px!important;
+            }
         `,
             filtersState: {
                 show: false
@@ -153,7 +200,8 @@ font-weight: bold;
                 var r = {}
                 this.cols.forEach(c => (r[c] = 0))
                 return r
-            })()
+            })(),
+            paginationSizes: [10,15,20,30,40,50,100,200,500]
         }
     },
     computed: {
@@ -195,6 +243,58 @@ font-weight: bold;
         }
     },
     methods: {
+        mountPaginator(){
+            this.$watch('paginator',()=>{
+                let ip = this.internalPaginator
+                let ip_id = Object.keys(ip).map(k=>ip[k]).join('_')
+                ip = this.paginator
+                let p_id = Object.keys(ip).map(k=>ip[k].toString()).join('_')
+                if(ip_id != p_id){
+                    if(this.paginator.count && this.paginator.size){
+                        let p = Object.assign({},this.paginator)
+                        p.page = p.page || 0
+                        let count = Math.ceil(p.count / 10) * 10;
+                        p.pages = Math.round(count / p.size)
+                        if(p.page>p.pages-1) p.page = p.pages-1
+                        p.from = p.size * p.page
+                        //p.to = (p.size * p.page) + p.size
+                        this.internalPaginator = p
+                        this.$emit('paginate',Object.assign({},p))
+                    }
+                }
+            },{
+                deep:true
+            })
+        },
+        onPaginationSizeChange(evt){
+            let p = this.internalPaginator
+            p.size = evt.target.value
+            if(p.count){
+                let count = Math.ceil(p.count / 10) * 10;
+                p.pages = Math.round(count / p.size)
+                if(p.page>p.pages-1) p.page = p.pages-1
+                p.from = p.size * p.page
+                this.$emit('paginate',Object.assign({},p))
+            }
+        },
+        canPaginate(dir){
+            let ip = this.internalPaginator
+            if(!ip.pages) return false
+            if(!ip.size) return false
+            if(!ip.count) return false
+            if(dir === -1){
+                return ip.page>0
+            }else{
+                return ip.page < ip.pages-1
+            }
+        },
+        paginate(dir){
+            let p = this.internalPaginator
+            p.page+=dir
+            p.from = p.size * p.page
+            p.to = (p.size * p.page) + p.size
+            this.$emit('paginate', Object.assign({}, p))
+        },
         exportCSVMethod() {
             let data = this.filteredItems()
             data = data.map(item => {
@@ -251,7 +351,9 @@ font-weight: bold;
                         if (!value.toString()) {
                             return true
                         } else {
-                            return value.toString().indexOf(this.filtersValue[key]) !== -1
+                            let left = value.toString().toLowerCase()
+                            let right = this.filtersValue[key].toLowerCase()
+                            return left.indexOf(right) !== -1
                         }
                     })
                 }
@@ -376,6 +478,7 @@ font-weight: bold;
         }
     },
     mounted() {
+        this.mountPaginator()
         this.applyScopedStyles()
 
         this.cols.forEach(col => {

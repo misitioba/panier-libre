@@ -21,8 +21,13 @@ export default {
                 <label>Voir les paniers archivés</label>
                 <toggle-component ref="toggleArchived" @toggle="toggleArchived"></toggle-component>
             </div>
+
+            <div class="" style="margin-bottom:10px">
+                <label>Voir les commandes annulés</label>
+                <toggle-component ref="toggleCanceled" @toggle="toggleCanceled"></toggle-component>
+            </div>
             
-            <table-component name="dashTable" @rowClick="rowClick" :exportCSV="exportCSV" :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
+            <table-component :paginator="paginator" @paginate="onPagination" ref="dashTable" name="dashTable" @rowClick="rowClick" :exportCSV="exportCSV" :filters="tableFilters" :gridColumns="gridColumns" :items="filteredItems" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" ></table-component>
 
             <modal-window ref="modal" :params="modalParams" v-show="!!modal" v-model="modal" @close="modal=''"></modal-window>
         </div>
@@ -31,7 +36,16 @@ export default {
     data() {
         var self = this
         return {
+            paginator:{
+                from:0,
+                to:10,
+                size:10,
+                count:0,
+                pages:0,
+                page:1
+            },
             showArchived: false,
+            showCanceled:false,
             modal: '',
             modalParams: {
                 id: ''
@@ -205,6 +219,10 @@ export default {
         }
     },
     methods: {
+        onPagination(p){
+            Object.assign(this.paginator,p)
+            this.refresh()
+        },
         rowClick(id, value) {
             this.modal = 'orderDetails'
             this.modalParams = {
@@ -212,22 +230,36 @@ export default {
             }
         },
         async refresh() {
-            this.items = await window.api.funql({
+            let {data, count} = await window.api.funql({
                 name: 'getDashboardData',
-                args: [this.showArchived],
+                args: [{
+                    showArchived: this.showArchived, 
+                    showCanceled: this.showCanceled,
+                    _paginate: Object.assign({},this.paginator)
+                }],
                 transform: function(items) {
-                    let [showArchived] = args
-                    return items.filter(i => (i.is_archived == showArchived ? 1 : 0))
+                    //let {showArchived, showCanceled} = args[0]
+                    //items=  items.filter(i => (i.is_archived == showArchived ? 1 : 0))
+                    //items=  items.filter(i => (i.is_canceled == showCanceled ? 1 : 0))
+                    return items
                 }
             })
+            this.items = data
+            this.paginator.count = count
         },
         toggleArchived() {
             this.showArchived = !this.showArchived
+            this.refresh()
+        },
+        toggleCanceled() {
+            this.showCanceled = !this.showCanceled
             this.refresh()
         }
     },
     mounted() {
         this.refresh()
+        
+        this.$refs.toggleCanceled.$emit('set', this.showCanceled)
         this.$refs.toggleArchived.$emit('set', this.showArchived)
     }
 }

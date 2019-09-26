@@ -10,25 +10,31 @@ Vue.component('sidebar', {
         <div class="sidebar_menu">
             <img class="logo" :src="logo"/>
             <ul v-show="collapsed && isLogged">
-                <li>
+                <li :class="linkSelected('dashboard')?'selected':''">
                     <button class="btn" @click="$router.push({name:'dashboard'})">Tableau de bord</button>
                 </li>
-                <li>
+                <li :class="linkSelected('baskets')?'selected':''">
                     <button class="btn" @click="$router.push({name:'baskets'})">Paniers</button>
                 </li>                
-                <li>
+                <li :class="linkSelected('clients')?'selected':''">
                     <button class="btn" @click="$router.push({name:'clients'})">Les clients</button>
                 </li>
                
-                <li>
+                <li :class="linkSelected('integration')?'selected':''">
                     <button class="btn" @click="$router.push({name:'integration'})">Intégration Web</button>
                 </li>
+                
                 <li>
                 <a class="btn" :href="'${window.cwd(
-        'reserver'
-    )}'+'?umid='+userModuleId" target="_blank">Reserver</a>
+    'reserver'
+  )}'+'?umid='+userModuleId" target="_blank">Ouvrez le formulaire de réservation</a>
             </li>
                 
+            <li>
+                    <a class="btn" href="${window.cwd(
+    'version'
+  )}" target="_blank">Version du logiciel</a>
+                </li>
                 
             </ul>
 
@@ -61,13 +67,18 @@ width: 100%;
                 bottom:5px;
                 width:100%;
             }
-            button{
+            .sidebar_menu button:hover,.sidebar_menu a:hover{
+                color:#ffd15c;
+            }
+            .sidebar_menu button,.sidebar_menu a{
                 width:100%;
                 text-align:left;
+                background: transparent;
+                color: #f3705a;
             }
                 .sidebar_slot{
                     overflow-y: auto;
-                    max-height: calc(100vh - 35px);
+                    max-height: calc(100vh - 36px);
                 }
                 ul{
                     list-style: none;
@@ -86,7 +97,7 @@ width: 100%;
                     position: relative;
                     width: auto;
                     height: calc(100vh);
-                    background-color: #b5a075;
+                    background-color: #181721;
                     margin-top: -36px;
                     grid-area: 'sidebar'
                 }
@@ -100,6 +111,9 @@ width: 100%;
                     text-align: center;
                     margin:20px auto;
                     display:block;
+                }
+                .sidebar_menu li.selected{
+                    background-color:#403838;
                 }
             `,
             collapsed: true,
@@ -116,16 +130,20 @@ width: 100%;
             return `sidebar ${this.collapsed ? 'collapsed' : ''}`
         }
     },
-    created() { },
+    created() {},
     methods: {
         toggle(value) {
             this.collapsed = value
             this.toggleColdown = Date.now() + 1000 * 20
+        },
+        linkSelected(name) {
+            console.log(this.$route)
+            return this.$route.name == name
         }
     },
     async mounted() {
         this.resizeInterval = setInterval(() => {
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 992) {
                 if (this.toggleColdown === null && this.collapsed) {
                     this.toggle(false)
                 } else {
@@ -133,9 +151,7 @@ width: 100%;
                         this.toggle(false)
                     }
                 }
-            } else {
-
-            }
+            } else {}
         }, 1000)
         this.userModuleId = await api.funql({ name: 'getUserModuleId' })
     }

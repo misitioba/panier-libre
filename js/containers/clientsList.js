@@ -7,7 +7,6 @@ export default {
             <div class="btn_group">
                 <button class="btn" @click="refresh">Refresh</button>
                 <button class="btn" @click="addClient">Ajouter</button>
-                <button class="btn" @click="()=>$router.push('/')">Retour</button>
             </div>
             
             <table-component :gridColumns="gridColumns" :items="items" :colsTransforms="colsTransforms" :valueTransforms="valueTransforms" :cols="cols" @clickRow="editClient"></table-component>
