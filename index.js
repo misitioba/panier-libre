@@ -57,11 +57,11 @@ module.exports = async(app, config) => {
                 `)
     })
 
-    const express = require('express')
-
-    app.use('/basket-hot/static', express.static(config.getPath('static')))
-
-    // console.log('TRACE BASKET', config)
+    //Static route for assets
+    app.use(
+        '/basket-hot/static',
+        require('express').static(config.getPath('static'))
+    )
 
     app.loadApiFunctions({
         path: config.getPath('api'),
@@ -87,8 +87,7 @@ module.exports = async(app, config) => {
         },
     })
 
-    // app.enableProgramationsSchedule()
-
+    //Route for the main vuejs client-side application
     app.get(
         config.getRouteName('/'),
         app.builder.transformFileRoute({
@@ -105,6 +104,7 @@ module.exports = async(app, config) => {
         })
     )
 
+    //Route for the changelog (converted from markdown on the fly)
     app.get(
         config.getRouteName('/version'),
         app.builder.transformFileRoute({
