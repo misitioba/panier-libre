@@ -8,12 +8,12 @@ module.exports = _app => {
 async function saveCustomerOrder(order) {
     dbName = this.dbName
     if (order.umid) {
-        dbName = await app.getDbnameFromUserModuleId(order.umid)
+        dbName = await app.api.admin.getDbnameFromUserModuleId(order.umid)
     }
 
     var client = null
     if (order.email) {
-        client = await app.getClientByEmail(order.email, {
+        client = await app.api.admin.getClientByEmail(order.email, {
             _dbName: dbName
         })
     }
@@ -117,25 +117,11 @@ async function saveOrder(order) {
       AND is_archived = 0
      group by o.id`
     let existingOrder = null
-        /*
-                                                                                                    let existingOrder = await app.dbExecute(
-                                                                                                        searchOneOrderQuery, [
-                                                                                                            getMoment()
-                                                                                                            .subtract(7, 'days')
-                                                                                                            .startOf('day')
-                                                                                                            ._d.getTime(),
-                                                                                                            getMoment()
-                                                                                                            .endOf('day')
-                                                                                                            ._d.getTime()
-                                                                                                        ], {
-                                                                                                            dbName,
-                                                                                                            single: true
-                                                                                                        }
-                                                                                                    ) */
+
     if (existingOrder) {
         order_id = existingOrder.id
         if (order.observation) {
-            await app.saveDocument({
+            await app.api.admin.saveDocument({
                 id: order_id,
                 observation: order.observation,
                 _table: 'orders',
@@ -197,39 +183,3 @@ function getNow () {
     .tz('Europe/Paris')
     ._d.getTime()
 }
-
-/*
-async function removeAutomaticBookingItems (order) {
-  await app.dbExecute(
-    `DELETE from basket_bookings WHERE client_id = ? AND basket_id NOT IN (${order.items
-      .map(i => i.id)
-      .join(', ')})`,
-    [order.client_id],
-    {
-      dbName: dbName
-    }
-  )
-}
-
-async function saveBookings (order) {
-  let now = getNow()
-  await app.dbExecute(
-    `
-    INSERT INTO
-    basket_bookings(client_id,basket_id,is_canceled,date)
-    VALUES
-    ${order.items.map(basket => {
-    return `(${order.client_id},${basket.id},${0},${now})`
-  }).join(`,
-    `)}
-    ON DUPLICATE KEY UPDATE
-    client_id = VALUES(client_id),
-    basket_id = VALUES(basket_id),
-    is_canceled = 0
-    `,
-    [],
-    {
-      dbName: dbName
-    }
-  )
-} */

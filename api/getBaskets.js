@@ -2,7 +2,7 @@ module.exports = app => {
     return async function getBaskets(params = {}) {
         let dbName = this.dbName
         if (params.umid) {
-            dbName = await app.getDbnameFromUserModuleId(params.umid)
+            dbName = await app.app.admin.getDbnameFromUserModuleId(params.umid)
         }
 
         let query = `

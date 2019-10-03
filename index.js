@@ -63,8 +63,13 @@ module.exports = async(app, config) => {
         require('express').static(config.getPath('static'))
     )
 
-    app.loadApiFunctions({
+    let funql = require('funql-api')
+
+    //This will load all the functions from /api
+    //the scope of the function is customized with the dbName of baske-hot and moduleId
+    await funql.loadFunctionsFromFolder({
         path: config.getPath('api'),
+        params: [app],
         scope: ({ req }) => {
             let dbName = config.db_name
             if (req && req.user && req.user.modules && req.user.modules.length > 0) {
@@ -80,11 +85,18 @@ module.exports = async(app, config) => {
         },
     })
 
-    app.loadFunctions({
-        path: config.getPath('shared-functions'),
-        scope: {
-            dbName: config.db_name,
-        },
+    await funql.loadFunctionsFromFolder({
+        namespace: 'admin',
+        path: config.getPath('api/admin'),
+        params: [app],
+        middlewares: [
+            async app => {
+                //These functions are only accessible internally
+                //e.g: app.api.admin.saveDocument
+                //if this.req is present, is an api call, and we return 401 (not authorized)
+                if (this.req) return { err: 401 }
+            },
+        ],
     })
 
     //Route for the main vuejs client-side application
