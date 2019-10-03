@@ -1,6 +1,6 @@
 {
     "name": "basket-hot",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "main": "index.js",
     "repository": "git@gitlab.com:misitioba/basket-hot.git",
     "author": "Javi <arancibiajav@gmail.com>",
