@@ -59,15 +59,6 @@ module.exports = async(app, config) => {
 
     const express = require('express')
 
-    app.get('/basket-hot/client', (req, res) => {
-        res.header('Access-Control-Allow-Origin', req.headers.origin)
-        res.header(
-            'Access-Control-Allow-Headers',
-            'Origin, X-Requested-With, Content-Type, Accept'
-        )
-        res.sendFile(config.getPath('client.js'))
-    })
-
     app.use('/basket-hot/static', express.static(config.getPath('static')))
 
     // console.log('TRACE BASKET', config)
