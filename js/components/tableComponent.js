@@ -358,6 +358,7 @@ font-weight: bold;
                     })
                 }
 
+                let filtersValue = this.filtersValue
                 items = items.filter(i => {
                     let value = this.transformValue(i, key)
 
@@ -373,7 +374,8 @@ font-weight: bold;
                             equal: '=='
                         }
                         let mod = this.filtersState[key]
-                        return eval(`i[key] ${symbols[mod]} this.filtersValue[key]`)
+                        let result = eval(`i[key] ${symbols[mod]} filtersValue[key]`)
+                        return result
                     }
 
                     return true
