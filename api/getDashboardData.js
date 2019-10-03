@@ -28,8 +28,6 @@ module.exports = app => {
       return query
     }
 
-    console.log('QUERY', getQuery())
-
     return {
       data: await app.dbExecute(getQuery(), [], {
         dbName: this.dbName

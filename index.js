@@ -1,17 +1,17 @@
 module.exports = async(app, config) => {
+    //This will serve the main javascript file bundled (ES6 -> ES5) using webpack
     app.get(
         config.getRouteName('app.js'),
         app.webpackMiddleware({
             entry: config.getPath('js/app.js'),
-            output: config.getPath('tmp/app.js'),
         })
     )
 
+    //This will serve the main javascript file for the external booking form
     app.get(
         config.getRouteName('booking_form_client.js'),
         app.webpackMiddleware({
             entry: config.getPath('js/booking-form.js'),
-            output: config.getPath('tmp/booking-form.js'),
             transform(html, req) {
                 var fullUrl = req.protocol + '://' + req.get('host')
                 if (process.env.NODE_ENV === 'production') {
@@ -26,6 +26,8 @@ module.exports = async(app, config) => {
         })
     )
 
+    //This is the external booking form implementation
+    //"Ouvrez le formulaire de réservation"
     app.get(config.getRouteName('reserver'), async(req, res) => {
         var fullUrl = req.protocol + '://' + req.get('host')
         if (process.env.NODE_ENV === 'production') {
