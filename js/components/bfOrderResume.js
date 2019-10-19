@@ -22,7 +22,8 @@ Vue.component('bf-order-resume', {
                 <div class="title" v-if="false" v-html="item.title"></div>
                 <div class="description" v-if="false" v-html="item.description"></div>
             </div>
-            <div class="a4">
+            <div class="a4 q_wrapper">
+                <label class="q_label">Quantité</label>
                 <input class="q" :value="item.quantity" @change="onQuantitychange($event,item)"/>
             </div>
             <div class="a3" >
@@ -112,12 +113,27 @@ font-style: italic;
     width: 50px;
     text-align: center;
 }
-
+.q_label{
+    display:none;
+}
 @media only screen and (max-width: 639px) {
         .basket{
             grid-template-columns: 50px 1fr 50px;
-            grid-template-areas: 'a1 a2 a3' 'a4 a4 a4';
-        }        
+            grid-template-areas: 'a2 a2 a3' 'a4 a4 a4' 'a1 a1 a1';
+            grid-row-gap: 10px;
+        }  
+        .basket .q_wrapper{
+            display:flex;
+            justify-content:center;
+        } 
+        .basket .q_label{
+            display:block;
+            padding: 0px 10px;
+    color: white;
+        }
+        .basket .q{
+            max-width:100px;
+        }     
         .price{
             text-align:left;
             margin:5px auto;
@@ -153,6 +169,6 @@ font-style: italic;
             this.$emit('input', newValue)
         }
     },
-    created() { },
-    mounted() { }
+    created() {},
+    mounted() {}
 })
