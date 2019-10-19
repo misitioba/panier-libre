@@ -146,7 +146,16 @@ font-style: italic;
             grid-area: section_validate;
         }
         @media only screen and (max-width: 639px) {
-                
+                .booking_form input, .booking_form textarea{
+                    width:100%;
+                }
+                .validateButton{
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+                .quote_by{
+                    text-align:center;
+                }
         }
         @media only screen and (max-width: 1047px) {
             
@@ -184,7 +193,9 @@ font-style: italic;
         async validate() {
             if (!this.order.fullname) return alert('Nom complet requis')
             if (!this.order.email) return alert('Email requis')
-            if (this.order.items.length === 0) return alert(`Vous devez d'abord sélectionner un panier`)
+            if (this.order.items.length === 0) {
+                return alert(`Vous devez d'abord sélectionner un panier`)
+            }
 
             try {
                 let r = await api.funql({
