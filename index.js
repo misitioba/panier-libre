@@ -37,6 +37,7 @@ module.exports = async(app, config) => {
                 <!-- CLIENT WEBPAGE -->
                 <head>
                     <title>Démo Réservation</title>
+                    <meta name='viewport', content='width=device-width, initial-scale=1'/>
                 </head>
                 <body>
                 <div class="app_goes_here"></div>
