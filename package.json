@@ -1,8 +1,8 @@
 {
-    "name": "basket-hot",
+    "name": "panier-libre",
     "version": "1.0.4",
     "main": "index.js",
-    "repository": "git@gitlab.com:misitioba/basket-hot.git",
+    "repository": "git@gitlab.com:misitioba/panier-libre.git",
     "author": "Javi <arancibiajav@gmail.com>",
     "license": "MIT"
 }

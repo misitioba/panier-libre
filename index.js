@@ -111,7 +111,7 @@ module.exports = async(app, config) => {
             context: {
                 cwd: config.getRouteName(),
                 head: {
-                    title: config.title,
+                    title: 'Panier Libre',
                 },
             },
         })

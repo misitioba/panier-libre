@@ -1,6 +1,6 @@
-# Basket-hot
+# Panier Libre
 
-Basket hot allow local entrepreneurs to manage baskets online.
+Panier Libre allow local entrepreneurs to manage baskets online.
 
 ## Features
 
@@ -28,7 +28,7 @@ Basket hot allow local entrepreneurs to manage baskets online.
 
     ```js
     {
-        title:"basket-hot",
+        title:"Panier Libre", //this will look for /apps/panier-libre folder
         enabled:1
     }
     ```
@@ -51,9 +51,9 @@ Basket hot allow local entrepreneurs to manage baskets online.
 
     ```js
     //rs (nodemon command to restart the process)
-    //or CTRL+C and 
+    //or CTRL+C and
     yarn dev
     ```
 
-- This module should be accessible using from localhost:3000/basket-hot
+- This module should be accessible using from localhost:3000/panier-libre
   
