@@ -11,7 +11,10 @@ Vue.component('bf-baskets-view', {
     <div class="root" ref="root" v-show="true">
         <p class="emptyText">Cliquez sur les paniers pour les ajouter à votre commande</p>
         <div class="basketsWrapper">
-        <div class="basket" v-for="(item, index) in baskets" :key="item.id" @click="$emit('select',item)">
+        <div class="basket" v-for="(item, index) in baskets" :key="item.id"
+        tabIndex="0"
+        role="button"
+        @click="$emit('select',item)">
             <div class="title" v-html="item.title"></div>
             <div readonly class="description" v-html="itemDescription(item)"></div>
             <div>
