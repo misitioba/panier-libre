@@ -51,7 +51,7 @@ export default {
             `(function(){
             var URI = '${window.publicPath}';
             let s = document.createElement('script')
-            s.src = URI+'/basket-hot/booking_form_client.js?callback=initstcbh&umid=${userModuleId}'
+            s.src = URI+'/panier-libre/booking_form_client.js?callback=initstcbh&umid=${userModuleId}'
             document.querySelector('body').append(s)
             window.initstcbh = function (app){
                 app.mount('CSS_SELECTOR')
