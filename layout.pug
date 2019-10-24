@@ -14,6 +14,7 @@ html
     link(rel="stylesheet", href="/basket-hot/static/app.css", attr)
     script.
       window.publicPath = '#{fn.publicPath()}'
+      window.instances = JSON.parse(`!{instances}`)
       window.cwd = function(relativePath){
         var root = '#{fn.cwd()}'
         var result = root+'/'+(relativePath||'')
