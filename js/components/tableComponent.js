@@ -520,7 +520,7 @@ font-weight: bold;
                     this.$forceUpdate()
                 }catch(err){}
             }
-            this.filtersState.show=true
+            //this.filtersState.show=true
         }
         },1000)
     }
