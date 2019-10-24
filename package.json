@@ -4,5 +4,12 @@
     "main": "index.js",
     "repository": "git@gitlab.com:misitioba/panier-libre.git",
     "author": "Javi <arancibiajav@gmail.com>",
-    "license": "MIT"
+    "license": "MIT",
+    "instances": [{
+        "title": "MisitioBA",
+        "url": "https://savoie.misitioba.com"
+    }, {
+        "title": "MisitioBA Dev",
+        "url": "https://edge.savoie.misitioba.com"
+    }]
 }

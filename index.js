@@ -100,6 +100,12 @@ module.exports = async(app, config) => {
         ],
     })
 
+    let package = JSON.parse(
+        (await require('sander').readFile(config.getPath('package.json'))).toString(
+            'utf-8'
+        )
+    )
+
     //Route for the main vuejs client-side application
     app.get(
         config.getRouteName('/'),
@@ -109,6 +115,7 @@ module.exports = async(app, config) => {
             mode: 'pug',
             transform: [app.cacheCDNScripts],
             context: {
+                instances: JSON.stringify(package.instances),
                 cwd: config.getRouteName(),
                 head: {
                     title: 'Panier Libre',
