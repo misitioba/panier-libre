@@ -1,6 +1,6 @@
 # Version du logiciel: PKG_VERSION
 
-Suivi des tâches dans le [trello](https://trello.com/b/czcS3ER4/basket-hot)
+Suivi des tâches dans le [trello](https://trello.com/b/czcS3ER4/tool-panier-libre)
 
 ## 26-09-19
 
