@@ -14,7 +14,10 @@ module.exports = async(app, config) => {
             entry: config.getPath('js/client.js'),
             transform(html, req) {
                 var fullUrl = req.protocol + '://' + req.get('host')
-                if (process.env.NODE_ENV === 'production') {
+
+                let isLocalhost = req.get('host').indexOf('localhost') !== -1
+
+                if (!isLocalhost && process.env.NODE_ENV === 'production') {
                     fullUrl = process.env.DOMAIN || fullUrl
                 }
 
@@ -28,9 +31,12 @@ module.exports = async(app, config) => {
 
     //This is the external booking form implementation
     //"Ouvrez le formulaire de réservation"
+
     app.get(config.getRouteName('reserver'), async(req, res) => {
         var fullUrl = req.protocol + '://' + req.get('host')
-        if (process.env.NODE_ENV === 'production') {
+        const isProd = process.env.NODE_ENV === 'production'
+        let isLocalhost = req.get('host').indexOf('localhost') !== -1
+        if (!isLocalhost && isProd) {
             fullUrl = process.env.DOMAIN || fullUrl
         }
         res.send(`
@@ -43,7 +49,7 @@ module.exports = async(app, config) => {
                 <div class="app_goes_here"></div>
                 <script>
                 (function(){
-                    window._vue_min = false // will load vue development version
+                    window._vue_min = ${isProd ? 'true' : 'false'}
                     
                     var URI = '${fullUrl}';
                     let s = document.createElement('script')
