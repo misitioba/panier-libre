@@ -1,12 +1,12 @@
 import stylesMixin from '../mixins/styles'
 import createEditableColumn from '../utils/createEditableColumn'
 import orderDetails from './orderDetails'
+import authMixin from '../mixins/auth'
 
-// import Vue from 'vue'
 Vue.component('orderDetails', orderDetails)
 
 export default {
-    mixins: [stylesMixin],
+    mixins: [stylesMixin,authMixin],
     name: 'dashboard',
     props: [],
     template: `
@@ -256,7 +256,16 @@ export default {
             this.refresh()
         }
     },
+    created(){
+        
+    },
     mounted() {
+        if(!this.isLogged){
+            window.toggleToolbar && window.toggleToolbar()
+            return this.$router.push({
+                name:'home'
+            })
+        }
         this.refresh()
         
         this.$refs.toggleCanceled.$emit('set', this.showCanceled)
