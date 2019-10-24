@@ -6,10 +6,10 @@ Vue.component('app-footer', {
     template: `
 <div ref="scope">
     <div class="common_footer" ref="root">
-        <p>Vous souhaitez utiliser cet outil à l'intérieur de votre organisation? Faites le nous savoir!</p>
+        <p>Vous souhaitez utiliser cet outil à l'intérieur de votre organisation? <br>C'est gratuit et nous vous aidons à l'installer :)</p>
         <input v-model="email" placeholder="votre email" />
         <button class="btn send" @click="send">Envoyer!</button>
-        <p class="italic">Basket hot est actuellement développé par misitioba dans le cadre du projet savoie-tech-coop, qui a pour mission de dynamiser les associations et les coopératives locales avec des outils numériques.</p>
+        <p class="italic">Panier libre est actuellement développé dans le cadre du projet qui a pour mission de dynamiser les associations et les coopératives locales avec des outils web libres.</p>
     </div>
 </div>
     `,
