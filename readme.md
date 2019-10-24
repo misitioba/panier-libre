@@ -29,6 +29,7 @@ Panier Libre allow local entrepreneurs to manage baskets online.
     ```js
     {
         title:"Panier Libre", //this will look for /apps/panier-libre folder
+        db_name: "panier_libre" //default database for this project
         enabled:1
     }
     ```
@@ -47,6 +48,8 @@ Panier Libre allow local entrepreneurs to manage baskets online.
 
     - Add the module using the GUI.
 
+- Run the initial msql migration file from migrations/initial.sql into your mysql database (i.e: panier_libre)
+
 - Restart the core project
 
     ```js
@@ -56,4 +59,10 @@ Panier Libre allow local entrepreneurs to manage baskets online.
     ```
 
 - This module should be accessible using from localhost:3000/panier-libre
+
+## Expose your server to the ecosystem
+
+- Add your instance into the instances array in package.json and pull request against the [official repository](https://gitlab.com/misitioba/panier-libre/tree/master)
+
+- Your server will be displayed in the homepage of all other instances. In the future, minimal stats of every instance will be also displayed.
   
