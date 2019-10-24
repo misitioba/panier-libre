@@ -1,11 +1,9 @@
 import ImportCDNJS from 'import-cdn-js'
 
 import './components/basketDetails'
-import './components/backComponent'
 import './components/baskets'
 import './components/buttonCmp'
 import './components/modalWindow'
-import './components/navComponent'
 import './components/tableComponent'
 import './components/textareaCmp'
 import './components/toggleComponent'
@@ -24,8 +22,6 @@ import BasketModels from './containers/basketModels'
 import Programation from './containers/programation'
 import Orders from './containers/orders'
 import OrdersDetails from './containers/orderDetails'
-import Empty from './containers/empty'
-import Login from './containers/login'
 ImportCDNJS('/analytics.js')
 
 window.ERROR = {
