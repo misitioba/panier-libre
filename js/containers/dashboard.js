@@ -199,7 +199,7 @@ export default {
 
                 return {
                     data,
-                    filename: `basket-hot-commandes-${date}`
+                    filename: `panier-libre-commandes-${date}`
                 }
             }
         }

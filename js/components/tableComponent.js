@@ -319,7 +319,7 @@ font-weight: bold;
                 let date = require('moment-timezone')()
                     .tz('Europe/Paris')
                     .format('DD-MM-YYYY-[a]-HH-mm')
-                downloadURI(uri, `basket-hot-commandes-${date}`)
+                downloadURI(uri, `panier-libre-commandes-${date}`)
             })
 
             function downloadURI(uri, name) {
