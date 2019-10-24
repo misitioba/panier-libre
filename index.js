@@ -9,9 +9,9 @@ module.exports = async(app, config) => {
 
     //This will serve the main javascript file for the external booking form
     app.get(
-        config.getRouteName('booking_form_client.js'),
+        config.getRouteName('client.js'),
         app.webpackMiddleware({
-            entry: config.getPath('js/booking-form.js'),
+            entry: config.getPath('js/client.js'),
             transform(html, req) {
                 var fullUrl = req.protocol + '://' + req.get('host')
                 if (process.env.NODE_ENV === 'production') {
@@ -43,9 +43,11 @@ module.exports = async(app, config) => {
                 <div class="app_goes_here"></div>
                 <script>
                 (function(){
+                    window._vue_min = false // will load vue development version
+                    
                     var URI = '${fullUrl}';
                     let s = document.createElement('script')
-                    s.src = URI+'/basket-hot/booking_form_client.js?callback=initstcbh&umid=${
+                    s.src = URI+'/panier-libre/client.js?callback=initstcbh&umid=${
                       req.query.umid
                     }'
                     document.querySelector('body').append(s)
@@ -60,7 +62,7 @@ module.exports = async(app, config) => {
 
     //Static route for assets
     app.use(
-        '/basket-hot/static',
+        config.getRouteName('/static'),
         require('express').static(config.getPath('static'))
     )
 

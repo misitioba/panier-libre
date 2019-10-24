@@ -7,11 +7,12 @@ function withVue() {
         if (!window._vue_is_loading) {
             window._vue_is_loading = true
             var s = document.createElement('script')
-            s.src = 'https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js'
+            const name = window._vue_min === false ? `vue.js` : `vue.min.js`
+            s.src = `https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/${name}`
             document.body.appendChild(s)
-            console.log('loading vue')
+                // console.log('loading vue...')
         }
-        return setTimeout(withVue, 1000)
+        return setTimeout(withVue, 50)
     }
 
     window._um_id = __USER_MODULE__ID__
