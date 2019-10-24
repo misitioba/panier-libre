@@ -117,6 +117,7 @@ module.exports = async(app, config) => {
             mode: 'pug',
             transform: [app.cacheCDNScripts],
             context: {
+                env: process.env,
                 instances: JSON.stringify(package.instances),
                 cwd: config.getRouteName(),
                 head: {
