@@ -1,6 +1,6 @@
 {
     "name": "panier-libre",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "main": "index.js",
     "repository": "git@gitlab.com:misitioba/panier-libre.git",
     "author": "Javi <arancibiajav@gmail.com>",
