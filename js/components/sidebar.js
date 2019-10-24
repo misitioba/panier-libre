@@ -1,14 +1,18 @@
-import stylesMixin from '../mixins/styles'
+import {
+    default as stylesMixin,
+    template as styleMixinTmpl
+} from '../mixins/styles'
 import authMixin from '../mixins/auth'
 
 Vue.component('sidebar', {
     mixins: [stylesMixin, authMixin],
     props: ['logo'],
-    template: `
-    <div ref="scope">
-    <div :class="sidebarClass" ref="root" v-show="isLogged">
-        <div class="sidebar_menu">
-            <img class="logo" :src="logo"/>
+    template: styleMixinTmpl(`
+    <div :class="sidebarClass" ref="root" >
+        <div class="sidebar_menu" @mousemove="mousemove">
+            
+            <img class="logo" @click="$router.push({name:'home'})" :src="logo"/>
+
             <ul v-show="collapsed && isLogged">
                 <li :class="linkSelected('dashboard')?'selected':''">
                     <button class="btn" @click="$router.push({name:'dashboard'})">Tableau de bord</button>
@@ -38,22 +42,22 @@ Vue.component('sidebar', {
                 
             </ul>
 
-            <div class="bottom">
-            <i @click="toggle(false)" v-show="collapsed" class="fas fa-angle-double-left toggle_btn"></i>
-            <i @click="toggle(true)" v-show="!collapsed" class="fas fa-angle-double-right toggle_btn"></i>
+            <div class="bottom" v-show="isLogged">
+                <i @click="toggle(false)" v-show="collapsed" class="fas fa-angle-double-left toggle_btn"></i>
+                <i @click="toggle(true)" v-show="!collapsed" class="fas fa-angle-double-right toggle_btn"></i>
             </div>
 
         </div>
-        <div class="sidebar_slot" v-show="isLogged">
+        <div class="sidebar_slot" >
             <slot  ></slot>
         </div>
     </div>
-    </div>
-    `,
+    `),
     data() {
         return {
             styles: `
             .logo{
+                cursor:pointer;
                 max-width: 100px;
 max-height: 150px;
 margin: 0px auto;
@@ -116,7 +120,7 @@ width: 100%;
                     background-color:#403838;
                 }
             `,
-            collapsed: true,
+            collapsed: false,
             userModuleId: '',
             resizeInterval: null,
             toggleColdown: null
@@ -132,12 +136,16 @@ width: 100%;
     },
     created() {},
     methods: {
+        mousemove() {
+            if (window.innerWidth > 1024 && !this.collapsed) {
+                this.toggle(true)
+            }
+        },
         toggle(value) {
             this.collapsed = value
             this.toggleColdown = Date.now() + 1000 * 20
         },
         linkSelected(name) {
-            console.log(this.$route)
             return this.$route.name == name
         }
     },
@@ -151,7 +159,11 @@ width: 100%;
                         this.toggle(false)
                     }
                 }
-            } else {}
+            } else {
+                if (this.toggleColdown === null && !this.collapsed) {
+                    this.toggle(true)
+                }
+            }
         }, 1000)
         this.userModuleId = await api.funql({ name: 'getUserModuleId' })
     }
