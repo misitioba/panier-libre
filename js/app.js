@@ -34,8 +34,6 @@ window.ERROR = {
 const routes = [
     { path: '/', component: Home, name: 'home' },
     { path: '/dashboard', component: Dashboard, name: 'dashboard' },
-    { path: '/login', component: Login, name: 'login' },
-    { path: '/logout', component: Empty, name: 'logout' },
     { path: '/baskets', component: Baskets, name: 'baskets' },
     { path: '/orders', component: Orders, name: 'orders' },
     { path: '/orders/:id', component: OrdersDetails, name: 'order-details' },
@@ -50,7 +48,6 @@ const router = new VueRouter({
     routes
 })
 
-// window.router = router
 window.onLogout = () => {
     router.push({ name: 'home' })
 }
