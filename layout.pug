@@ -11,7 +11,7 @@ html
     link(rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css")
     link(rel="stylesheet", href="/static/css/fonts.css", attr)
 
-    link(rel="stylesheet", href="/basket-hot/static/app.css", attr)
+    link(rel="stylesheet", href=fn.cwd("static/app.css"), attr)
     script.
       window.publicPath = '#{fn.publicPath()}'
       window.instances = JSON.parse(`!{instances}`)
@@ -23,13 +23,13 @@ html
   body
     block beforeApp
     .appTop()
-      common-header(@on_login="login" ref="header" @logout="onLogout" @user="onUser" logo="/basket-hot/static/logo.svg")
-      common-login(v-show="showLogin" @close="closeModal" @logged="onLoginSuccess" logo="/basket-hot/static/logo.svg")
+      common-header(@on_login="login" ref="header" @logout="onLogout" @user="onUser" logo=fn.cwd("static/logo.svg"))
+      common-login(v-show="showLogin" @close="closeModal" @logged="onLoginSuccess" logo=fn.cwd("static/logo.svg"))
     .app
       block beforeHeader
       //include ../partials/header.pug
       block afterHeader
-      sidebar(logo="/basket-hot/static/logo.svg")
+      sidebar(logo=fn.cwd("static/logo.svg"))
         .app_content
           block content
         app-footer
